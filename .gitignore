@@ -24,3 +24,5 @@ data/exports/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/exports/.gitkeep
+# OSMnx HTTP/query cache
+cache/
