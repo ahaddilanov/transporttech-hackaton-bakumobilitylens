@@ -1,0 +1,43 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "bus-route-001",
+        "name": "Mock Central Route",
+        "route_ref": "M1",
+        "avg_daily_validations": 12500
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [49.842, 40.414],
+          [49.852, 40.411],
+          [49.8671, 40.4093],
+          [49.879, 40.405],
+          [49.891, 40.401]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "bus-route-002",
+        "name": "Mock North-South Route",
+        "route_ref": "M2",
+        "avg_daily_validations": 8700
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [49.858, 40.427],
+          [49.861, 40.419],
+          [49.8671, 40.4093],
+          [49.872, 40.399],
+          [49.875, 40.391]
+        ]
+      }
+    }
+  ]
+}

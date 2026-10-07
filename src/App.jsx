@@ -8,12 +8,21 @@ import { loadGeoJson } from './data/loadGeoJson'
 
 function App() {
   const [busStops, setBusStops] = useState(null)
+  const [busRoutes, setBusRoutes] = useState(null)
   const [selectedFeature, setSelectedFeature] = useState(null)
 
   useEffect(() => {
     loadGeoJson('/data/bus_stops.geojson')
       .then((data) => {
         setBusStops(data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+
+    loadGeoJson('/data/bus_routes.geojson')
+      .then((data) => {
+        setBusRoutes(data)
       })
       .catch((error) => {
         console.error(error)
@@ -31,6 +40,25 @@ function App() {
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
+        {busRoutes && (
+          <GeoJSON
+            data={busRoutes}
+            style={{
+              color: '#2563eb',
+              weight: 4,
+              opacity: 0.8,
+            }}
+            onEachFeature={(feature, layer) => {
+              layer.on('click', () => {
+                setSelectedFeature({
+                  type: 'Bus route',
+                  properties: feature.properties,
+                })
+              })
+            }}
+          />
+        )}
 
         {busStops && (
           <GeoJSON
@@ -71,6 +99,21 @@ function App() {
               <strong>Name:</strong>{' '}
               {selectedFeature.properties.name ?? 'Unavailable'}
             </p>
+
+            {selectedFeature.type === 'Bus route' && (
+              <>
+                <p>
+                  <strong>Route ref:</strong>{' '}
+                  {selectedFeature.properties.route_ref ?? 'Unavailable'}
+                </p>
+
+                <p>
+                  <strong>Avg. daily validations:</strong>{' '}
+                  {selectedFeature.properties.avg_daily_validations ??
+                    'Unavailable'}
+                </p>
+              </>
+            )}
           </>
         ) : (
           <p>Click a map feature to view its details.</p>
