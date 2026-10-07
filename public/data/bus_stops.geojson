@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "bus-stop-001",
+        "name": "Mock Stop A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [49.8671, 40.4093]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "bus-stop-002",
+        "name": "Mock Stop B"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [49.879, 40.401]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "bus-stop-003",
+        "name": "Mock Stop C"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [49.851, 40.418]
+      }
+    }
+  ]
+}
