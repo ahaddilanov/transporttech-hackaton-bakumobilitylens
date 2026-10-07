@@ -1,0 +1,26 @@
+# Python virtual environments
+.venv/
+venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# VS Code local settings
+.vscode/
+
+# OS files
+.DS_Store
+
+# Environment/secrets
+.env
+
+# Raw and generated data
+data/raw/*
+data/processed/*
+data/exports/*
+
+# Keep empty data directories in Git
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/exports/.gitkeep
