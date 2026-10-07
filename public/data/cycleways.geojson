@@ -1,0 +1,39 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "cycleway-001",
+        "name": "Mock Waterfront Cycleway",
+        "length_m": 2400
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [49.842, 40.397],
+          [49.855, 40.396],
+          [49.868, 40.395],
+          [49.881, 40.394]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "cycleway-002",
+        "name": "Mock Central Cycleway",
+        "length_m": 1750
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [49.849, 40.421],
+          [49.856, 40.415],
+          [49.864, 40.408],
+          [49.872, 40.402]
+        ]
+      }
+    }
+  ]
+}

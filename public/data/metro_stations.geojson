@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "metro-station-001",
+        "name": "Mock Metro Central",
+        "avg_daily_entries": 28000
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [49.852, 40.412]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "metro-station-002",
+        "name": "Mock Metro East",
+        "avg_daily_entries": 19500
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [49.882, 40.401]
+      }
+    }
+  ]
+}
