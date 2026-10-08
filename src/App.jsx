@@ -6,8 +6,10 @@ import './App.css'
 import AppHeader from './components/AppHeader'
 import DataStatus from './components/DataStatus'
 import DetailsPanel from './components/DetailsPanel'
+import MapFocusController from './components/MapFocusController'
 import MapLayers from './components/MapLayers'
 import PriorityLegend from './components/PriorityLegend'
+import PriorityRanking from './components/PriorityRanking'
 import ScoreSelector from './components/ScoreSelector'
 import SelectedFeatureLayer from './components/SelectedFeatureLayer'
 import SummaryPanel from './components/SummaryPanel'
@@ -30,13 +32,18 @@ function App() {
   const [metroStations, setMetroStations] = useState(null)
   const [cycleways, setCycleways] = useState(null)
   const [grid, setGrid] = useState(null)
-  const [busRecommendations, setBusRecommendations] = useState(null)
-  const [bikeRecommendations, setBikeRecommendations] = useState(null)
+  const [busRecommendations, setBusRecommendations] =
+    useState(null)
+  const [bikeRecommendations, setBikeRecommendations] =
+    useState(null)
   const [summary, setSummary] = useState(null)
 
-  const [selectedFeature, setSelectedFeature] = useState(null)
-  const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
+  const [selectedFeature, setSelectedFeature] =
+    useState(null)
+  const [selectedMetric, setSelectedMetric] =
+    useState('mobility_gap')
   const [theme, setTheme] = useState('light')
+  const [focusRequest, setFocusRequest] = useState(null)
 
   const [loading, setLoading] = useState(true)
   const [loadErrors, setLoadErrors] = useState([])
@@ -145,13 +152,27 @@ function App() {
     }
   }, [])
 
+  function handleRankingSelect(selection) {
+    setSelectedFeature(selection)
+
+    if (selection.focusMap && selection.feature) {
+      setFocusRequest((currentRequest) => ({
+        feature: selection.feature,
+        sequence:
+          (currentRequest?.sequence ?? 0) + 1,
+      }))
+    }
+  }
+
   return (
     <div className="app" data-theme={theme}>
       <AppHeader
         theme={theme}
         onToggleTheme={() =>
           setTheme((currentTheme) =>
-            currentTheme === 'light' ? 'dark' : 'light'
+            currentTheme === 'light'
+              ? 'dark'
+              : 'light'
           )
         }
       />
@@ -181,6 +202,10 @@ function App() {
         <SelectedFeatureLayer
           selectedFeature={selectedFeature}
         />
+
+        <MapFocusController
+          focusRequest={focusRequest}
+        />
       </MapContainer>
 
       <ScoreSelector
@@ -190,12 +215,21 @@ function App() {
 
       <SummaryPanel summary={summary} />
 
+      <PriorityRanking
+        busRecommendations={busRecommendations}
+        bikeRecommendations={bikeRecommendations}
+        selectedFeature={selectedFeature}
+        onSelect={handleRankingSelect}
+      />
+
       <DetailsPanel
         selectedFeature={selectedFeature}
         onClose={() => setSelectedFeature(null)}
       />
 
-      <PriorityLegend selectedMetric={selectedMetric} />
+      <PriorityLegend
+        selectedMetric={selectedMetric}
+      />
 
       <DataStatus
         loading={loading}

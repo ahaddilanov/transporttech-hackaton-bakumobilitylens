@@ -273,13 +273,63 @@
   transform: translateX(-50%);
 }
 
+.summary-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 10px;
+}
+
+.summary-eyebrow {
+  margin: 0 0 2px;
+
+  color: var(--text-muted);
+
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
 .summary-panel h2 {
-  margin: 0 0 10px;
+  margin: 0;
 
   color: var(--text-primary);
 
   font-size: 14px;
   font-weight: 750;
+}
+
+.summary-collapse-button {
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  flex: 0 0 auto;
+
+  padding: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: var(--surface-soft);
+  color: var(--text-secondary);
+
+  font-family: inherit;
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+.summary-collapse-button:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
 }
 
 .summary-grid {
@@ -315,6 +365,84 @@
 
   font-size: 10px;
   line-height: 1.25;
+}
+
+.summary-collapsed {
+  position: absolute;
+  top: 138px;
+  left: 50%;
+
+  z-index: 1050;
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+
+  gap: 9px;
+
+  min-width: 190px;
+
+  padding: 8px 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: var(--surface);
+  color: var(--text-primary);
+
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(14px);
+
+  font-family: inherit;
+  text-align: left;
+
+  transform: translateX(-50%);
+
+  cursor: pointer;
+}
+
+.summary-collapsed:hover {
+  background: var(--surface-soft);
+}
+
+.summary-collapsed-icon {
+  display: grid;
+  place-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 8px;
+
+  background: var(--accent);
+  color: var(--accent-contrast);
+
+  font-size: 13px;
+}
+
+.summary-collapsed-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-collapsed-copy strong {
+  color: var(--text-primary);
+
+  font-size: 11px;
+}
+
+.summary-collapsed-copy span {
+  margin-top: 2px;
+
+  color: var(--text-muted);
+
+  font-size: 9px;
+}
+
+.summary-collapsed-arrow {
+  color: var(--text-muted);
+
+  font-size: 14px;
 }
 
 /* -------------------------------------------------- */
@@ -489,4 +617,18 @@
     contrast(1.15)
     hue-rotate(180deg)
     saturate(0.7);
+}
+
+/* -------------------------------------------------- */
+/* Leaflet control positioning                        */
+/* -------------------------------------------------- */
+
+/*
+  The TransportTech header occupies the top of the map.
+  Move Leaflet's built-in controls beneath it so they
+  remain visible and clickable.
+*/
+
+.app .leaflet-top {
+  top: 78px;
 }
