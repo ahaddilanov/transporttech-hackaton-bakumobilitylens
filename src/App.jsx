@@ -8,6 +8,7 @@ import DetailsPanel from './components/DetailsPanel'
 import MapLayers from './components/MapLayers'
 import PriorityLegend from './components/PriorityLegend'
 import ScoreSelector from './components/ScoreSelector'
+import SelectedFeatureLayer from './components/SelectedFeatureLayer'
 import SummaryPanel from './components/SummaryPanel'
 import { DATA_SOURCES } from './data/dataSources'
 import { loadGeoJson, loadJson } from './data/loadGeoJson'
@@ -165,6 +166,8 @@ function App() {
           selectedMetric={selectedMetric}
           onSelect={setSelectedFeature}
         />
+
+        <SelectedFeatureLayer selectedFeature={selectedFeature} />
       </MapContainer>
 
       <ScoreSelector

@@ -32,6 +32,14 @@ function MapLayers({
   selectedMetric,
   onSelect,
 }) {
+  function selectFeature(type, feature) {
+    onSelect({
+      type,
+      properties: feature.properties,
+      feature,
+    })
+  }
+
   return (
     <LayersControl position="topleft">
       {grid && (
@@ -49,10 +57,7 @@ function MapLayers({
             })}
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                onSelect({
-                  type: 'Grid cell',
-                  properties: feature.properties,
-                })
+                selectFeature('Grid cell', feature)
               })
             }}
           />
@@ -70,10 +75,7 @@ function MapLayers({
             }}
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                onSelect({
-                  type: 'Bus route',
-                  properties: feature.properties,
-                })
+                selectFeature('Bus route', feature)
               })
             }}
           />
@@ -91,10 +93,7 @@ function MapLayers({
             }}
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                onSelect({
-                  type: 'Cycleway',
-                  properties: feature.properties,
-                })
+                selectFeature('Cycleway', feature)
               })
             }}
           />
@@ -114,10 +113,7 @@ function MapLayers({
             }
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                onSelect({
-                  type: 'Bus stop',
-                  properties: feature.properties,
-                })
+                selectFeature('Bus stop', feature)
               })
             }}
           />
@@ -137,10 +133,7 @@ function MapLayers({
             }
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                onSelect({
-                  type: 'Metro station',
-                  properties: feature.properties,
-                })
+                selectFeature('Metro station', feature)
               })
             }}
           />
@@ -162,10 +155,7 @@ function MapLayers({
             }
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                onSelect({
-                  type: 'Bus recommendation',
-                  properties: feature.properties,
-                })
+                selectFeature('Bus recommendation', feature)
               })
             }}
           />
@@ -184,10 +174,7 @@ function MapLayers({
             }}
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                onSelect({
-                  type: 'Bike recommendation',
-                  properties: feature.properties,
-                })
+                selectFeature('Bike recommendation', feature)
               })
             }}
           />
