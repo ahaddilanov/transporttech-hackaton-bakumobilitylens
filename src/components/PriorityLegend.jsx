@@ -1,8 +1,17 @@
-function PriorityLegend() {
+function PriorityLegend({ selectedMetric }) {
+  const titles = {
+    mobility_gap: 'Mobility Gap',
+    bus_priority: 'Bus Priority',
+    bike_priority: 'Bike Priority',
+  }
+
   return (
     <div className="priority-legend">
-      <h3>Mobility gap</h3>
-      <p className="legend-note">Higher score = greater need</p>
+      <h3>{titles[selectedMetric]}</h3>
+
+      <p className="legend-note">
+        Higher score = greater need
+      </p>
 
       <div className="legend-row">
         <span className="legend-color legend-low"></span>

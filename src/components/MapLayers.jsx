@@ -27,19 +27,21 @@ function MapLayers({
   metroStations,
   cycleways,
   grid,
+  selectedMetric,
   onSelect,
 }) {
   return (
     <LayersControl position="topleft">
       {grid && (
-        <LayersControl.Overlay checked name="Mobility Gap">
+        <LayersControl.Overlay checked name="Analysis Grid">
           <GeoJSON
+            key={selectedMetric}
             data={grid}
             style={(feature) => ({
               color: '#374151',
               weight: 1,
               fillColor: getPriorityColor(
-                feature.properties.mobility_gap
+                feature.properties[selectedMetric]
               ),
               fillOpacity: 0.55,
             })}

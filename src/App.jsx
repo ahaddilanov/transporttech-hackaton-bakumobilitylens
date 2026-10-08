@@ -6,6 +6,7 @@ import './App.css'
 import DetailsPanel from './components/DetailsPanel'
 import MapLayers from './components/MapLayers'
 import PriorityLegend from './components/PriorityLegend'
+import ScoreSelector from './components/ScoreSelector'
 import { loadGeoJson } from './data/loadGeoJson'
 
 function App() {
@@ -14,7 +15,9 @@ function App() {
   const [metroStations, setMetroStations] = useState(null)
   const [cycleways, setCycleways] = useState(null)
   const [grid, setGrid] = useState(null)
+
   const [selectedFeature, setSelectedFeature] = useState(null)
+  const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
 
   useEffect(() => {
     loadGeoJson('/data/bus_stops.geojson')
@@ -76,13 +79,19 @@ function App() {
           metroStations={metroStations}
           cycleways={cycleways}
           grid={grid}
+          selectedMetric={selectedMetric}
           onSelect={setSelectedFeature}
         />
       </MapContainer>
 
+      <ScoreSelector
+        selectedMetric={selectedMetric}
+        onChange={setSelectedMetric}
+      />
+
       <DetailsPanel selectedFeature={selectedFeature} />
 
-      <PriorityLegend />
+      <PriorityLegend selectedMetric={selectedMetric} />
     </div>
   )
 }
