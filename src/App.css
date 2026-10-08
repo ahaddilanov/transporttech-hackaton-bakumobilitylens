@@ -703,3 +703,135 @@
 .app[data-focus-mode="true"] .layers-collapsed {
   display: none;
 }
+
+.overview-view-button {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  height: 36px;
+
+  padding: 0 11px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface-soft);
+  color: var(--text-secondary);
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.overview-view-button:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+
+  transform: translateY(-1px);
+}
+
+.header-context {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+}
+
+.data-mode-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 4px 7px;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background: var(--surface-soft);
+  color: var(--text-muted);
+
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.035em;
+
+  white-space: nowrap;
+}
+
+.data-mode-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+}
+
+.data-mode-prototype
+.data-mode-dot {
+  background: #f59e0b;
+}
+
+.data-mode-api
+.data-mode-dot {
+  background: #22c55e;
+}
+
+/* -------------------------------------------------- */
+/* Map feature hover previews                         */
+/* -------------------------------------------------- */
+
+.app .leaflet-tooltip.transport-tooltip {
+  padding: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface-solid);
+  color: var(--text-primary);
+
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.14);
+
+  font-family: inherit;
+
+  overflow: hidden;
+}
+
+.app .leaflet-tooltip.transport-tooltip::before {
+  border-top-color: var(--surface-solid);
+}
+
+.transport-tooltip-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  min-width: 110px;
+
+  padding: 8px 10px;
+}
+
+.transport-tooltip-content strong {
+  color: var(--text-primary);
+
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.transport-tooltip-content span {
+  color: var(--text-muted);
+
+  font-size: 8px;
+  line-height: 1.35;
+}

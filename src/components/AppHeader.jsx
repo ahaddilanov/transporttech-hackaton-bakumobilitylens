@@ -3,11 +3,18 @@ function AppHeader({
   onToggleTheme,
   focusMode,
   onToggleFocusMode,
+  onResetView,
+  dataMode,
 }) {
+  const usingApi = dataMode === 'api'
+
   return (
     <header className="app-header">
       <div className="brand">
-        <div className="brand-mark" aria-hidden="true">
+        <div
+          className="brand-mark"
+          aria-hidden="true"
+        >
           T
         </div>
 
@@ -18,10 +25,46 @@ function AppHeader({
       </div>
 
       <div className="header-context">
-        Urban accessibility & intervention planning
+        <span>
+          Urban accessibility & intervention planning
+        </span>
+
+        <span
+          className={`data-mode-badge ${
+            usingApi
+              ? 'data-mode-api'
+              : 'data-mode-prototype'
+          }`}
+          title={
+            usingApi
+              ? 'Frontend data loaded from the configured API'
+              : 'Frontend is currently using prototype development data'
+          }
+        >
+          <span
+            className="data-mode-dot"
+            aria-hidden="true"
+          />
+
+          {usingApi
+            ? 'API data'
+            : 'Prototype data'}
+        </span>
       </div>
 
       <div className="header-actions">
+        <button
+          type="button"
+          className="overview-view-button"
+          onClick={onResetView}
+        >
+          <span aria-hidden="true">
+            ◎
+          </span>
+
+          Baku overview
+        </button>
+
         <button
           type="button"
           className={`focus-mode-toggle ${
@@ -33,7 +76,9 @@ function AppHeader({
             {focusMode ? '↙' : '⌗'}
           </span>
 
-          {focusMode ? 'Restore tools' : 'Focus map'}
+          {focusMode
+            ? 'Restore tools'
+            : 'Focus map'}
         </button>
 
         <button
@@ -41,18 +86,24 @@ function AppHeader({
           className="theme-toggle"
           onClick={onToggleTheme}
           aria-label={`Switch to ${
-            theme === 'light' ? 'dark' : 'light'
+            theme === 'light'
+              ? 'dark'
+              : 'light'
           } mode`}
         >
           <span
             className="theme-toggle-icon"
             aria-hidden="true"
           >
-            {theme === 'light' ? '◐' : '☀'}
+            {theme === 'light'
+              ? '◐'
+              : '☀'}
           </span>
 
           <span>
-            {theme === 'light' ? 'Dark' : 'Light'}
+            {theme === 'light'
+              ? 'Dark'
+              : 'Light'}
           </span>
         </button>
       </div>

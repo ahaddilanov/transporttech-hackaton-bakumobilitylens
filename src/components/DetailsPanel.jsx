@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './DetailsPanel.css'
 
 function showValue(value, suffix = '') {
@@ -13,7 +12,10 @@ function DetailRow({ label, value }) {
   return (
     <div className="feature-row">
       <span>{label}</span>
-      <span className="feature-value">{value}</span>
+
+      <span className="feature-value">
+        {value}
+      </span>
     </div>
   )
 }
@@ -30,21 +32,26 @@ function ReasonList({ reasons }) {
   return (
     <ul className="feature-reasons">
       {reasons.map((reason) => (
-        <li key={reason}>{reason}</li>
+        <li key={reason}>
+          {reason}
+        </li>
       ))}
     </ul>
   )
 }
 
-function DetailsPanel({ selectedFeature }) {
-  const [collapsed, setCollapsed] = useState(false)
-
+function DetailsPanel({
+  selectedFeature,
+  collapsed,
+  onCollapse,
+  onOpen,
+}) {
   if (collapsed) {
     return (
       <button
         type="button"
         className="inspector-collapsed"
-        onClick={() => setCollapsed(false)}
+        onClick={onOpen}
         aria-label="Open map inspector"
       >
         <span className="inspector-collapsed-icon">
@@ -53,6 +60,7 @@ function DetailsPanel({ selectedFeature }) {
 
         <span className="inspector-collapsed-copy">
           <strong>Inspector</strong>
+
           <span>
             {selectedFeature
               ? selectedFeature.type
@@ -79,13 +87,15 @@ function DetailsPanel({ selectedFeature }) {
               Map inspector
             </p>
 
-            <h2>Feature details</h2>
+            <h2>
+              Feature details
+            </h2>
           </div>
 
           <button
             type="button"
             className="feature-panel-close"
-            onClick={() => setCollapsed(true)}
+            onClick={onCollapse}
             aria-label="Hide map inspector"
           >
             ×
@@ -126,7 +136,7 @@ function DetailsPanel({ selectedFeature }) {
         <button
           type="button"
           className="feature-panel-close"
-          onClick={() => setCollapsed(true)}
+          onClick={onCollapse}
           aria-label="Hide map inspector"
         >
           ×
@@ -152,7 +162,8 @@ function DetailsPanel({ selectedFeature }) {
           <DetailRow
             label="Name"
             value={
-              properties.name ?? 'Unavailable'
+              properties.name ??
+              'Unavailable'
             }
           />
         )}

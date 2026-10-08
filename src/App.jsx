@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+import {
+  MapContainer,
+  TileLayer,
+} from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './App.css'
 
@@ -10,11 +17,21 @@ import DetailsPanel from './components/DetailsPanel'
 import LayerPanel from './components/LayerPanel'
 import MapFocusController from './components/MapFocusController'
 import MapLayers from './components/MapLayers'
+import MapSelectionController from './components/MapSelectionController'
 import PriorityRanking from './components/PriorityRanking'
 import SelectedFeatureLayer from './components/SelectedFeatureLayer'
 import SummaryPanel from './components/SummaryPanel'
-import { DATA_SOURCES } from './data/dataSources'
-import { loadGeoJson, loadJson } from './data/loadGeoJson'
+
+import {
+  DATA_MODE,
+  DATA_SOURCES,
+} from './data/dataSources'
+
+import {
+  loadGeoJson,
+  loadJson,
+} from './data/loadGeoJson'
+
 import {
   validateBikeRecommendations,
   validateBusRecommendations,
@@ -42,32 +59,81 @@ const FEATURE_LAYER_MAP = {
   'Metro station': 'metroStations',
   Cycleway: 'cycleways',
   'Grid cell': 'grid',
-  'Bus recommendation': 'busRecommendations',
-  'Bike recommendation': 'bikeRecommendations',
+  'Bus recommendation':
+    'busRecommendations',
+  'Bike recommendation':
+    'bikeRecommendations',
 }
 
 function App() {
-  const [busStops, setBusStops] = useState(null)
-  const [busRoutes, setBusRoutes] = useState(null)
-  const [metroStations, setMetroStations] = useState(null)
-  const [cycleways, setCycleways] = useState(null)
-  const [grid, setGrid] = useState(null)
-  const [busRecommendations, setBusRecommendations] = useState(null)
-  const [bikeRecommendations, setBikeRecommendations] = useState(null)
-  const [summary, setSummary] = useState(null)
+  const [busStops, setBusStops] =
+    useState(null)
 
-  const [selectedFeature, setSelectedFeature] = useState(null)
-  const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
-  const [theme, setTheme] = useState('light')
-  const [focusMode, setFocusMode] = useState(false)
-  const [focusRequest, setFocusRequest] = useState(null)
+  const [busRoutes, setBusRoutes] =
+    useState(null)
 
-  const [layerVisibility, setLayerVisibility] = useState(
+  const [
+    metroStations,
+    setMetroStations,
+  ] = useState(null)
+
+  const [cycleways, setCycleways] =
+    useState(null)
+
+  const [grid, setGrid] =
+    useState(null)
+
+  const [
+    busRecommendations,
+    setBusRecommendations,
+  ] = useState(null)
+
+  const [
+    bikeRecommendations,
+    setBikeRecommendations,
+  ] = useState(null)
+
+  const [summary, setSummary] =
+    useState(null)
+
+  const [
+    selectedFeature,
+    setSelectedFeature,
+  ] = useState(null)
+
+  const [
+    selectedMetric,
+    setSelectedMetric,
+  ] = useState('mobility_gap')
+
+  const [theme, setTheme] =
+    useState('light')
+
+  const [focusMode, setFocusMode] =
+    useState(false)
+
+  const [
+    inspectorCollapsed,
+    setInspectorCollapsed,
+  ] = useState(false)
+
+  const [
+    focusRequest,
+    setFocusRequest,
+  ] = useState(null)
+
+  const [
+    layerVisibility,
+    setLayerVisibility,
+  ] = useState(
     INITIAL_LAYER_VISIBILITY
   )
 
-  const [loading, setLoading] = useState(true)
-  const [loadErrors, setLoadErrors] = useState([])
+  const [loading, setLoading] =
+    useState(true)
+
+  const [loadErrors, setLoadErrors] =
+    useState([])
 
   useEffect(() => {
     let cancelled = false
@@ -80,8 +146,11 @@ function App() {
       setter
     ) {
       try {
-        const data = await loader(source)
-        const validatedData = validator(data)
+        const data =
+          await loader(source)
+
+        const validatedData =
+          validator(data)
 
         if (!cancelled) {
           setter(validatedData)
@@ -90,10 +159,12 @@ function App() {
         console.error(error)
 
         if (!cancelled) {
-          setLoadErrors((currentErrors) => [
-            ...currentErrors,
-            `${label}: ${error.message}`,
-          ])
+          setLoadErrors(
+            (currentErrors) => [
+              ...currentErrors,
+              `${label}: ${error.message}`,
+            ]
+          )
         }
       }
     }
@@ -146,7 +217,8 @@ function App() {
         loadDataset(
           'Bus recommendations',
           loadGeoJson,
-          DATA_SOURCES.busRecommendations,
+          DATA_SOURCES
+            .busRecommendations,
           validateBusRecommendations,
           setBusRecommendations
         ),
@@ -154,7 +226,8 @@ function App() {
         loadDataset(
           'Bike recommendations',
           loadGeoJson,
-          DATA_SOURCES.bikeRecommendations,
+          DATA_SOURCES
+            .bikeRecommendations,
           validateBikeRecommendations,
           setBikeRecommendations
         ),
@@ -180,43 +253,88 @@ function App() {
     }
   }, [])
 
-  function handleRankingSelect(selection) {
-    const layerKey = FEATURE_LAYER_MAP[selection.type]
+  const handleClearSelection =
+    useCallback(() => {
+      setSelectedFeature(null)
+    }, [])
+
+  function handleMapSelect(selection) {
+    setSelectedFeature(selection)
+    setInspectorCollapsed(false)
+  }
+
+  function handleRankingSelect(
+    selection
+  ) {
+    const layerKey =
+      FEATURE_LAYER_MAP[
+        selection.type
+      ]
 
     if (layerKey) {
-      setLayerVisibility((current) => ({
-        ...current,
-        [layerKey]: true,
-      }))
+      setLayerVisibility(
+        (current) => ({
+          ...current,
+          [layerKey]: true,
+        })
+      )
     }
 
     setSelectedFeature(selection)
+    setInspectorCollapsed(false)
 
-    if (selection.focusMap && selection.feature) {
-      setFocusRequest((currentRequest) => ({
-        feature: selection.feature,
-        sequence: (currentRequest?.sequence ?? 0) + 1,
-      }))
+    if (
+      selection.focusMap &&
+      selection.feature
+    ) {
+      setFocusRequest(
+        (currentRequest) => ({
+          type: 'feature',
+          feature:
+            selection.feature,
+          sequence:
+            (currentRequest
+              ?.sequence ?? 0) + 1,
+        })
+      )
     }
   }
 
-  function handleLayerToggle(layerKey) {
-    setLayerVisibility((current) => {
-      const nextVisible = !current[layerKey]
+  function handleLayerToggle(
+    layerKey
+  ) {
+    setLayerVisibility(
+      (current) => {
+        const nextVisible =
+          !current[layerKey]
 
-      if (
-        !nextVisible &&
-        selectedFeature &&
-        FEATURE_LAYER_MAP[selectedFeature.type] === layerKey
-      ) {
-        setSelectedFeature(null)
-      }
+        if (
+          !nextVisible &&
+          selectedFeature &&
+          FEATURE_LAYER_MAP[
+            selectedFeature.type
+          ] === layerKey
+        ) {
+          setSelectedFeature(null)
+        }
 
-      return {
-        ...current,
-        [layerKey]: nextVisible,
+        return {
+          ...current,
+          [layerKey]: nextVisible,
+        }
       }
-    })
+    )
+  }
+
+  function handleResetView() {
+    setFocusRequest(
+      (currentRequest) => ({
+        type: 'overview',
+        sequence:
+          (currentRequest
+            ?.sequence ?? 0) + 1,
+      })
+    )
   }
 
   return (
@@ -228,18 +346,31 @@ function App() {
       <AppHeader
         theme={theme}
         onToggleTheme={() =>
-          setTheme((currentTheme) =>
-            currentTheme === 'light' ? 'dark' : 'light'
+          setTheme(
+            (currentTheme) =>
+              currentTheme ===
+              'light'
+                ? 'dark'
+                : 'light'
           )
         }
         focusMode={focusMode}
         onToggleFocusMode={() =>
-          setFocusMode((current) => !current)
+          setFocusMode(
+            (current) => !current
+          )
         }
+        onResetView={
+          handleResetView
+        }
+        dataMode={DATA_MODE}
       />
 
       <MapContainer
-        center={[40.4093, 49.8671]}
+        center={[
+          40.4093,
+          49.8671,
+        ]}
         zoom={12}
         className="map"
       >
@@ -251,46 +382,97 @@ function App() {
         <MapLayers
           busStops={busStops}
           busRoutes={busRoutes}
-          metroStations={metroStations}
+          metroStations={
+            metroStations
+          }
           cycleways={cycleways}
           grid={grid}
-          busRecommendations={busRecommendations}
-          bikeRecommendations={bikeRecommendations}
-          selectedMetric={selectedMetric}
-          visibility={layerVisibility}
-          onSelect={setSelectedFeature}
+          busRecommendations={
+            busRecommendations
+          }
+          bikeRecommendations={
+            bikeRecommendations
+          }
+          selectedMetric={
+            selectedMetric
+          }
+          visibility={
+            layerVisibility
+          }
+          onSelect={
+            handleMapSelect
+          }
         />
 
         <SelectedFeatureLayer
-          selectedFeature={selectedFeature}
+          selectedFeature={
+            selectedFeature
+          }
         />
 
         <MapFocusController
-          focusRequest={focusRequest}
+          focusRequest={
+            focusRequest
+          }
+        />
+
+        <MapSelectionController
+          onClearSelection={
+            handleClearSelection
+          }
         />
       </MapContainer>
 
-      <SummaryPanel summary={summary} />
+      <SummaryPanel
+        summary={summary}
+      />
 
       <PriorityRanking
-        busRecommendations={busRecommendations}
-        bikeRecommendations={bikeRecommendations}
-        selectedFeature={selectedFeature}
-        onSelect={handleRankingSelect}
+        busRecommendations={
+          busRecommendations
+        }
+        bikeRecommendations={
+          bikeRecommendations
+        }
+        selectedFeature={
+          selectedFeature
+        }
+        onSelect={
+          handleRankingSelect
+        }
       />
 
       <DetailsPanel
-        selectedFeature={selectedFeature}
+        selectedFeature={
+          selectedFeature
+        }
+        collapsed={
+          inspectorCollapsed
+        }
+        onCollapse={() =>
+          setInspectorCollapsed(true)
+        }
+        onOpen={() =>
+          setInspectorCollapsed(false)
+        }
       />
 
       <AnalysisPanel
-        selectedMetric={selectedMetric}
-        onChange={setSelectedMetric}
+        selectedMetric={
+          selectedMetric
+        }
+        onChange={
+          setSelectedMetric
+        }
       />
 
       <LayerPanel
-        visibility={layerVisibility}
-        onToggle={handleLayerToggle}
+        visibility={
+          layerVisibility
+        }
+        onToggle={
+          handleLayerToggle
+        }
       />
 
       <DataStatus
