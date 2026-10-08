@@ -154,3 +154,86 @@
 .feature-reasons li {
   margin: 6px 0;
 }
+
+.inspector-collapsed {
+  position: absolute;
+  top: 88px;
+  right: 16px;
+
+  z-index: 1100;
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+
+  gap: 9px;
+
+  min-width: 182px;
+
+  padding: 9px 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: var(--surface);
+  color: var(--text-primary);
+
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(16px);
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.inspector-collapsed:hover {
+  background: var(--surface-soft);
+}
+
+.inspector-collapsed-icon {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 9px;
+
+  background: var(--accent);
+  color: var(--accent-contrast);
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.inspector-collapsed-copy {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.inspector-collapsed-copy strong {
+  color: var(--text-primary);
+
+  font-size: 11px;
+}
+
+.inspector-collapsed-copy span {
+  margin-top: 2px;
+
+  color: var(--text-muted);
+
+  font-size: 9px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspector-collapsed-arrow {
+  color: var(--text-muted);
+
+  font-size: 16px;
+}

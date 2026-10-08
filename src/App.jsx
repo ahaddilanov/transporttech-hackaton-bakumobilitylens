@@ -3,15 +3,14 @@ import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './App.css'
 
+import AnalysisPanel from './components/AnalysisPanel'
 import AppHeader from './components/AppHeader'
 import DataStatus from './components/DataStatus'
 import DetailsPanel from './components/DetailsPanel'
 import LayerPanel from './components/LayerPanel'
 import MapFocusController from './components/MapFocusController'
 import MapLayers from './components/MapLayers'
-import PriorityLegend from './components/PriorityLegend'
 import PriorityRanking from './components/PriorityRanking'
-import ScoreSelector from './components/ScoreSelector'
 import SelectedFeatureLayer from './components/SelectedFeatureLayer'
 import SummaryPanel from './components/SummaryPanel'
 import { DATA_SOURCES } from './data/dataSources'
@@ -281,11 +280,6 @@ function App() {
         />
       </MapContainer>
 
-      <ScoreSelector
-        selectedMetric={selectedMetric}
-        onChange={setSelectedMetric}
-      />
-
       <SummaryPanel summary={summary} />
 
       <PriorityRanking
@@ -297,13 +291,11 @@ function App() {
 
       <DetailsPanel
         selectedFeature={selectedFeature}
-        onClose={() =>
-          setSelectedFeature(null)
-        }
       />
 
-      <PriorityLegend
+      <AnalysisPanel
         selectedMetric={selectedMetric}
+        onChange={setSelectedMetric}
       />
 
       <LayerPanel
