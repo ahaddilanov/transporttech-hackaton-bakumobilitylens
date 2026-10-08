@@ -87,6 +87,14 @@ function MapLayers({
   visibility,
   onSelect,
 }) {
+  const adaptiveLineClass = visibility.grid
+    ? 'grid-reactive-line'
+    : ''
+
+  const adaptiveMarkerClass = visibility.grid
+    ? 'grid-reactive-marker'
+    : ''
+
   function selectFeature(type, feature) {
     onSelect({
       type,
@@ -107,7 +115,7 @@ function MapLayers({
             fillColor: getPriorityColor(
               feature.properties[selectedMetric]
             ),
-            fillOpacity: 0.55,
+            fillOpacity: 0.42,
           })}
           onEachFeature={(feature, layer) => {
             const properties = feature.properties
@@ -142,7 +150,8 @@ function MapLayers({
             style={{
               color: '#2563eb',
               weight: 4,
-              opacity: 0.8,
+              opacity: 0.78,
+              className: adaptiveLineClass,
             }}
             onEachFeature={(
               feature,
@@ -182,7 +191,8 @@ function MapLayers({
             style={{
               color: '#16a34a',
               weight: 4,
-              opacity: 0.8,
+              opacity: 0.78,
+              className: adaptiveLineClass,
             }}
             onEachFeature={(
               feature,
@@ -224,7 +234,8 @@ function MapLayers({
               L.circleMarker(latlng, {
                 radius: 7,
                 weight: 2,
-                fillOpacity: 0.8,
+                fillOpacity: 0.82,
+                className: adaptiveMarkerClass,
               })
             }
             onEachFeature={(
@@ -264,7 +275,8 @@ function MapLayers({
               L.circleMarker(latlng, {
                 radius: 9,
                 weight: 3,
-                fillOpacity: 0.9,
+                fillOpacity: 0.86,
+                className: adaptiveMarkerClass,
               })
             }
             onEachFeature={(
@@ -308,7 +320,8 @@ function MapLayers({
                 color: '#7c3aed',
                 weight: 3,
                 fillColor: '#a78bfa',
-                fillOpacity: 0.9,
+                fillOpacity: 0.86,
+                className: adaptiveMarkerClass,
               })
             }
             onEachFeature={(
@@ -348,8 +361,9 @@ function MapLayers({
             style={{
               color: '#0891b2',
               weight: 6,
-              opacity: 0.9,
+              opacity: 0.82,
               dashArray: '10 6',
+              className: adaptiveLineClass,
             }}
             onEachFeature={(
               feature,
