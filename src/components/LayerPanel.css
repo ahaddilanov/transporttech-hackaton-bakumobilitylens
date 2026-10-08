@@ -1,3 +1,7 @@
+/* ================================================== */
+/* TransportTech — LayerPanel.css                     */
+/* ================================================== */
+
 .layer-panel {
   position: absolute;
   right: 16px;
@@ -5,22 +9,29 @@
 
   z-index: 1100;
 
-  width: 300px;
+  width: 310px;
   max-height: calc(100vh - 140px);
 
   overflow-y: auto;
+  overscroll-behavior: contain;
 
-  padding: 18px;
+  padding: 17px;
 
-  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
+
+  background: var(--surface);
+  color: var(--text-primary);
 
   box-shadow: var(--shadow-panel);
   backdrop-filter: blur(16px);
 
-  color: var(--text-primary);
+  scrollbar-width: thin;
 }
+
+/* ================================================== */
+/* Header                                             */
+/* ================================================== */
 
 .layer-panel-header {
   display: flex;
@@ -29,7 +40,7 @@
 
   gap: 12px;
 
-  margin-bottom: 12px;
+  margin-bottom: 13px;
 }
 
 .layer-panel-eyebrow {
@@ -38,7 +49,7 @@
   color: var(--text-muted);
 
   font-size: 9px;
-  font-weight: 750;
+  font-weight: 800;
   letter-spacing: 0.09em;
 
   text-transform: uppercase;
@@ -50,7 +61,20 @@
   color: var(--text-primary);
 
   font-size: 18px;
+  font-weight: 800;
   line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.layer-panel-intro {
+  max-width: 220px;
+
+  margin: 5px 0 0;
+
+  color: var(--text-muted);
+
+  font-size: 9px;
+  line-height: 1.45;
 }
 
 .layer-panel-collapse {
@@ -74,12 +98,23 @@
   font-size: 17px;
 
   cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
 }
 
 .layer-panel-collapse:hover {
   background: var(--surface-muted);
   color: var(--text-primary);
+
+  transform: translateY(-1px);
 }
+
+/* ================================================== */
+/* Sections                                           */
+/* ================================================== */
 
 .layer-section {
   padding: 13px 0;
@@ -87,36 +122,106 @@
   border-top: 1px solid var(--border);
 }
 
-.layer-section:first-of-type {
-  border-top: 0;
+.layer-section-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 7px;
 }
 
 .layer-section-title {
-  margin: 0 0 8px;
+  margin: 0;
 
   color: var(--text-muted);
 
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.065em;
 
   text-transform: uppercase;
 }
+
+.layer-section-status {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 18px;
+
+  padding: 0 6px;
+
+  border-radius: 999px;
+
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.layer-section-existing {
+  background: rgba(37, 99, 235, 0.09);
+  color: #2563eb;
+}
+
+.layer-section-analysis {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+}
+
+.layer-section-proposed {
+  background: rgba(124, 58, 237, 0.1);
+  color: #7c3aed;
+}
+
+.app[data-theme="dark"]
+  .layer-section-existing {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+
+.app[data-theme="dark"]
+  .layer-section-analysis {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fcd34d;
+}
+
+.app[data-theme="dark"]
+  .layer-section-proposed {
+  background: rgba(167, 139, 250, 0.14);
+  color: #c4b5fd;
+}
+
+/* ================================================== */
+/* Layer rows                                         */
+/* ================================================== */
 
 .layer-toggle {
   position: relative;
 
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns:
+    26px minmax(0, 1fr) auto;
 
-  gap: 14px;
+  gap: 10px;
   align-items: center;
 
-  min-height: 48px;
+  min-height: 51px;
 
-  padding: 8px 0;
+  padding: 6px 3px;
+
+  border-radius: 10px;
 
   cursor: pointer;
+
+  transition:
+    background 140ms ease,
+    transform 140ms ease;
+}
+
+.layer-toggle:hover {
+  background: var(--surface-soft);
 }
 
 .layer-toggle-copy {
@@ -129,18 +234,156 @@
 .layer-toggle-copy strong {
   color: var(--text-primary);
 
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 720;
+  line-height: 1.25;
 }
 
-.layer-toggle-copy span {
+.layer-toggle-copy > span {
   margin-top: 3px;
 
   color: var(--text-muted);
 
-  font-size: 9px;
+  font-size: 8px;
   line-height: 1.35;
 }
+
+/* ================================================== */
+/* Layer visual symbols                               */
+/* ================================================== */
+
+.layer-symbol {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: 26px;
+  height: 26px;
+
+  flex: 0 0 auto;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: var(--surface-soft);
+
+  overflow: hidden;
+}
+
+/* Bus stop */
+
+.layer-symbol-bus-stop span {
+  width: 10px;
+  height: 10px;
+
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+
+  background: #2563eb;
+
+  box-shadow:
+    0 0 0 1px rgba(37, 99, 235, 0.4);
+}
+
+/* Bus route */
+
+.layer-symbol-bus-route span {
+  width: 20px;
+  height: 4px;
+
+  border-radius: 999px;
+
+  background: #2563eb;
+
+  transform: rotate(-18deg);
+}
+
+/* Metro */
+
+.layer-symbol-metro span {
+  width: 13px;
+  height: 13px;
+
+  border: 3px solid #0f172a;
+  border-radius: 50%;
+
+  background: #f8fafc;
+}
+
+/* Cycleway */
+
+.layer-symbol-cycleway span {
+  width: 20px;
+  height: 4px;
+
+  border-radius: 999px;
+
+  background: #16a34a;
+
+  transform: rotate(-18deg);
+}
+
+/* Analysis grid */
+
+.layer-symbol-grid {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.72) 0%,
+      rgba(234, 179, 8, 0.72) 34%,
+      rgba(249, 115, 22, 0.72) 67%,
+      rgba(220, 38, 38, 0.72) 100%
+    );
+}
+
+.layer-symbol-grid span {
+  width: 16px;
+  height: 16px;
+
+  border: 1px solid
+    rgba(51, 65, 85, 0.7);
+
+  background: transparent;
+}
+
+/* Bus recommendation */
+
+.layer-symbol-bus-recommendation
+  span {
+  width: 13px;
+  height: 13px;
+
+  border: 3px solid #6d28d9;
+  border-radius: 50%;
+
+  background: #a78bfa;
+}
+
+/* Bike recommendation */
+
+.layer-symbol-bike-recommendation
+  span {
+  width: 21px;
+  height: 4px;
+
+  border-radius: 999px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #0891b2 0,
+      #0891b2 6px,
+      transparent 6px,
+      transparent 9px
+    );
+
+  transform: rotate(-18deg);
+}
+
+/* ================================================== */
+/* Switch                                             */
+/* ================================================== */
 
 .layer-toggle input {
   position: absolute;
@@ -149,6 +392,7 @@
   height: 1px;
 
   opacity: 0;
+  pointer-events: none;
 }
 
 .layer-switch {
@@ -186,16 +430,68 @@
     background 150ms ease;
 }
 
-.layer-toggle input:checked + .layer-switch {
-  background: var(--accent);
+.layer-toggle
+  input:checked
+  + .layer-switch {
   border-color: var(--accent);
+
+  background: var(--accent);
 }
 
-.layer-toggle input:checked + .layer-switch span {
+.layer-toggle
+  input:checked
+  + .layer-switch
+  span {
   background: var(--accent-contrast);
 
   transform: translateX(14px);
 }
+
+.layer-toggle
+  input:focus-visible
+  + .layer-switch {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ================================================== */
+/* Engineering note                                   */
+/* ================================================== */
+
+.layer-panel-note {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin-top: 3px;
+  padding: 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface-soft);
+}
+
+.layer-panel-note > span {
+  color: #0891b2;
+
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.layer-panel-note p {
+  margin: 0;
+
+  color: var(--text-muted);
+
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+/* ================================================== */
+/* Collapsed control                                  */
+/* ================================================== */
 
 .layers-collapsed {
   position: absolute;
@@ -205,7 +501,8 @@
   z-index: 1100;
 
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns:
+    auto 1fr auto;
   align-items: center;
 
   gap: 9px;
@@ -227,10 +524,16 @@
   text-align: left;
 
   cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
 }
 
 .layers-collapsed:hover {
   background: var(--surface-soft);
+
+  transform: translateY(-1px);
 }
 
 .layers-collapsed-icon {
@@ -272,4 +575,18 @@
   color: var(--text-muted);
 
   font-size: 14px;
+}
+
+/* ================================================== */
+/* Reduced motion                                     */
+/* ================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .layer-toggle,
+  .layer-switch,
+  .layer-switch span,
+  .layers-collapsed,
+  .layer-panel-collapse {
+    transition: none;
+  }
 }

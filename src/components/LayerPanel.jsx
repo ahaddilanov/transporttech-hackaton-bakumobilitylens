@@ -1,14 +1,28 @@
 import { useState } from 'react'
 import './LayerPanel.css'
 
+function LayerSymbol({ type }) {
+  return (
+    <span
+      className={`layer-symbol layer-symbol-${type}`}
+      aria-hidden="true"
+    >
+      <span />
+    </span>
+  )
+}
+
 function LayerToggle({
   label,
   description,
+  symbol,
   checked,
   onChange,
 }) {
   return (
     <label className="layer-toggle">
+      <LayerSymbol type={symbol} />
+
       <div className="layer-toggle-copy">
         <strong>{label}</strong>
         <span>{description}</span>
@@ -20,22 +34,31 @@ function LayerToggle({
         onChange={onChange}
       />
 
-      <span className="layer-switch" aria-hidden="true">
+      <span
+        className="layer-switch"
+        aria-hidden="true"
+      >
         <span />
       </span>
     </label>
   )
 }
 
-function LayerPanel({ visibility, onToggle }) {
-  const [collapsed, setCollapsed] = useState(true)
+function LayerPanel({
+  visibility,
+  onToggle,
+}) {
+  const [collapsed, setCollapsed] =
+    useState(true)
 
   if (collapsed) {
     return (
       <button
         type="button"
         className="layers-collapsed"
-        onClick={() => setCollapsed(false)}
+        onClick={() =>
+          setCollapsed(false)
+        }
         aria-label="Open map layers"
       >
         <span className="layers-collapsed-icon">
@@ -44,7 +67,9 @@ function LayerPanel({ visibility, onToggle }) {
 
         <span className="layers-collapsed-copy">
           <strong>Map layers</strong>
-          <span>Infrastructure & analysis</span>
+          <span>
+            Infrastructure & analysis
+          </span>
         </span>
 
         <span
@@ -66,12 +91,20 @@ function LayerPanel({ visibility, onToggle }) {
           </p>
 
           <h2>Layers</h2>
+
+          <p className="layer-panel-intro">
+            Existing infrastructure,
+            analysis and proposed
+            interventions.
+          </p>
         </div>
 
         <button
           type="button"
           className="layer-panel-collapse"
-          onClick={() => setCollapsed(true)}
+          onClick={() =>
+            setCollapsed(true)
+          }
           aria-label="Collapse map layers"
         >
           ×
@@ -79,28 +112,43 @@ function LayerPanel({ visibility, onToggle }) {
       </div>
 
       <section className="layer-section">
-        <p className="layer-section-title">
-          Existing infrastructure
-        </p>
+        <div className="layer-section-heading">
+          <span className="layer-section-status layer-section-existing">
+            Existing
+          </span>
+
+          <p className="layer-section-title">
+            Infrastructure
+          </p>
+        </div>
 
         <LayerToggle
           label="Bus stops"
           description="Existing stop locations"
+          symbol="bus-stop"
           checked={visibility.busStops}
-          onChange={() => onToggle('busStops')}
+          onChange={() =>
+            onToggle('busStops')
+          }
         />
 
         <LayerToggle
           label="Bus routes"
           description="Existing route geometry"
+          symbol="bus-route"
           checked={visibility.busRoutes}
-          onChange={() => onToggle('busRoutes')}
+          onChange={() =>
+            onToggle('busRoutes')
+          }
         />
 
         <LayerToggle
           label="Metro stations"
           description="Existing metro access"
-          checked={visibility.metroStations}
+          symbol="metro"
+          checked={
+            visibility.metroStations
+          }
           onChange={() =>
             onToggle('metroStations')
           }
@@ -109,47 +157,87 @@ function LayerPanel({ visibility, onToggle }) {
         <LayerToggle
           label="Cycleways"
           description="Existing cycling infrastructure"
+          symbol="cycleway"
           checked={visibility.cycleways}
-          onChange={() => onToggle('cycleways')}
+          onChange={() =>
+            onToggle('cycleways')
+          }
         />
       </section>
 
       <section className="layer-section">
-        <p className="layer-section-title">
-          Analysis
-        </p>
+        <div className="layer-section-heading">
+          <span className="layer-section-status layer-section-analysis">
+            Analysis
+          </span>
+
+          <p className="layer-section-title">
+            Accessibility
+          </p>
+        </div>
 
         <LayerToggle
           label="Priority grid"
           description="Current selected analysis score"
+          symbol="grid"
           checked={visibility.grid}
-          onChange={() => onToggle('grid')}
+          onChange={() =>
+            onToggle('grid')
+          }
         />
       </section>
 
       <section className="layer-section">
-        <p className="layer-section-title">
-          Proposed improvements
-        </p>
+        <div className="layer-section-heading">
+          <span className="layer-section-status layer-section-proposed">
+            Proposed
+          </span>
+
+          <p className="layer-section-title">
+            Improvements
+          </p>
+        </div>
 
         <LayerToggle
           label="Candidate bus improvements"
           description="Public-transport interventions"
-          checked={visibility.busRecommendations}
+          symbol="bus-recommendation"
+          checked={
+            visibility.busRecommendations
+          }
           onChange={() =>
-            onToggle('busRecommendations')
+            onToggle(
+              'busRecommendations'
+            )
           }
         />
 
         <LayerToggle
           label="Candidate bicycle corridors"
           description="Further engineering assessment"
-          checked={visibility.bikeRecommendations}
+          symbol="bike-recommendation"
+          checked={
+            visibility.bikeRecommendations
+          }
           onChange={() =>
-            onToggle('bikeRecommendations')
+            onToggle(
+              'bikeRecommendations'
+            )
           }
         />
       </section>
+
+      <div className="layer-panel-note">
+        <span aria-hidden="true">
+          ◇
+        </span>
+
+        <p>
+          Proposed bicycle corridors are
+          candidates for further engineering
+          assessment.
+        </p>
+      </div>
     </aside>
   )
 }

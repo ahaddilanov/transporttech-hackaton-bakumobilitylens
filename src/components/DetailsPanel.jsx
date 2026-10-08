@@ -5,7 +5,51 @@ function showValue(value, suffix = '') {
     return 'Unavailable'
   }
 
+  if (typeof value === 'number') {
+    return `${value.toLocaleString()}${suffix}`
+  }
+
   return `${value}${suffix}`
+}
+
+function getPriorityLabel(score) {
+  if (score === null || score === undefined) {
+    return 'Unavailable'
+  }
+
+  if (score >= 75) {
+    return 'Very high need'
+  }
+
+  if (score >= 50) {
+    return 'High need'
+  }
+
+  if (score >= 25) {
+    return 'Moderate need'
+  }
+
+  return 'Low need'
+}
+
+function getPriorityClass(score) {
+  if (score === null || score === undefined) {
+    return 'priority-unavailable'
+  }
+
+  if (score >= 75) {
+    return 'priority-very-high'
+  }
+
+  if (score >= 50) {
+    return 'priority-high'
+  }
+
+  if (score >= 25) {
+    return 'priority-moderate'
+  }
+
+  return 'priority-low'
 }
 
 function DetailRow({ label, value }) {
@@ -13,15 +57,63 @@ function DetailRow({ label, value }) {
     <div className="feature-row">
       <span>{label}</span>
 
-      <span className="feature-value">
+      <strong className="feature-value">
         {value}
+      </strong>
+    </div>
+  )
+}
+
+function PriorityMeter({
+  label,
+  score,
+}) {
+  const hasScore =
+    score !== null &&
+    score !== undefined
+
+  const safeScore = hasScore
+    ? Math.max(
+        0,
+        Math.min(100, score)
+      )
+    : 0
+
+  return (
+    <div className="priority-meter">
+      <div className="priority-meter-heading">
+        <span>{label}</span>
+
+        <strong>
+          {hasScore
+            ? `${score}/100`
+            : 'Unavailable'}
+        </strong>
+      </div>
+
+      <div className="priority-meter-track">
+        <span
+          className={`priority-meter-fill ${getPriorityClass(
+            score
+          )}`}
+          style={{
+            width: `${safeScore}%`,
+          }}
+        />
+      </div>
+
+      <span className="priority-meter-label">
+        {getPriorityLabel(score)}
       </span>
     </div>
   )
 }
 
 function ReasonList({ reasons }) {
-  if (!Array.isArray(reasons) || reasons.length === 0) {
+  if (
+    !Array.isArray(reasons) ||
+    reasons.length === 0
+  ) {
     return (
       <p className="feature-panel-empty">
         Unavailable
@@ -31,12 +123,63 @@ function ReasonList({ reasons }) {
 
   return (
     <ul className="feature-reasons">
-      {reasons.map((reason) => (
-        <li key={reason}>
-          {reason}
-        </li>
-      ))}
+      {reasons.map(
+        (reason, index) => (
+          <li
+            key={`${reason}-${index}`}
+          >
+            <span
+              className="reason-marker"
+              aria-hidden="true"
+            >
+              {index + 1}
+            </span>
+
+            <span>
+              {reason}
+            </span>
+          </li>
+        )
+      )}
     </ul>
+  )
+}
+
+function FeatureTypeBadge({ type }) {
+  const proposed =
+    type ===
+      'Bus recommendation' ||
+    type ===
+      'Bike recommendation'
+
+  const analysis =
+    type === 'Grid cell'
+
+  let label =
+    'Existing infrastructure'
+
+  if (proposed) {
+    label =
+      'Proposed improvement'
+  }
+
+  if (analysis) {
+    label =
+      'Analysis'
+  }
+
+  return (
+    <span
+      className={`feature-type-badge ${
+        proposed
+          ? 'feature-type-proposed'
+          : analysis
+            ? 'feature-type-analysis'
+            : 'feature-type-existing'
+      }`}
+    >
+      {label}
+    </span>
   )
 }
 
@@ -59,7 +202,9 @@ function DetailsPanel({
         </span>
 
         <span className="inspector-collapsed-copy">
-          <strong>Inspector</strong>
+          <strong>
+            Inspector
+          </strong>
 
           <span>
             {selectedFeature
@@ -102,14 +247,33 @@ function DetailsPanel({
           </button>
         </div>
 
-        <p className="feature-panel-empty">
-          Select a map feature to inspect its information.
-        </p>
+        <div className="inspector-empty-state">
+          <span
+            className="inspector-empty-icon"
+            aria-hidden="true"
+          >
+            ◇
+          </span>
+
+          <strong>
+            Nothing selected
+          </strong>
+
+          <p>
+            Select a grid cell,
+            transport feature or
+            recommendation to inspect
+            its information.
+          </p>
+        </div>
       </aside>
     )
   }
 
-  const { type, properties } = selectedFeature
+  const {
+    type,
+    properties,
+  } = selectedFeature
 
   const hasName = [
     'Bus stop',
@@ -118,19 +282,28 @@ function DetailsPanel({
     'Cycleway',
   ].includes(type)
 
+  const title = hasName
+    ? properties.name ??
+      'Unnamed feature'
+    : properties.id
+
   return (
     <aside className="feature-panel">
       <div className="feature-panel-header">
-        <div>
+        <div className="feature-panel-heading">
           <p className="feature-panel-eyebrow">
-            {type}
+            Map inspector
           </p>
 
-          <h2>
-            {hasName
-              ? properties.name ?? 'Unnamed feature'
-              : properties.id}
-          </h2>
+          <FeatureTypeBadge
+            type={type}
+          />
+
+          <h2>{title}</h2>
+
+          <p className="feature-panel-type">
+            {type}
+          </p>
         </div>
 
         <button
@@ -147,11 +320,6 @@ function DetailsPanel({
         <p className="feature-section-title">
           Identity
         </p>
-
-        <DetailRow
-          label="Type"
-          value={type}
-        />
 
         <DetailRow
           label="ID"
@@ -189,10 +357,17 @@ function DetailsPanel({
               properties.avg_daily_validations
             )}
           />
+
+          <p className="feature-context-note">
+            Daily validations are
+            route-level context, not
+            stop-level passenger demand.
+          </p>
         </section>
       )}
 
-      {type === 'Metro station' && (
+      {type ===
+        'Metro station' && (
         <section className="feature-section">
           <p className="feature-section-title">
             Station context
@@ -227,15 +402,35 @@ function DetailsPanel({
         <>
           <section className="feature-section">
             <p className="feature-section-title">
-              Accessibility
+              Accessibility context
             </p>
 
-            <DetailRow
-              label="Population"
-              value={showValue(
-                properties.population
-              )}
-            />
+            <div className="inspector-stat-grid">
+              <div className="inspector-stat">
+                <span>
+                  Population
+                </span>
+
+                <strong>
+                  {showValue(
+                    properties.population
+                  )}
+                </strong>
+              </div>
+
+              <div className="inspector-stat">
+                <span>
+                  Bus stops within
+                  500 m
+                </span>
+
+                <strong>
+                  {showValue(
+                    properties.bus_stops_500m
+                  )}
+                </strong>
+              </div>
+            </div>
 
             <DetailRow
               label="Nearest bus stop"
@@ -262,13 +457,6 @@ function DetailsPanel({
             />
 
             <DetailRow
-              label="Bus stops within 500 m"
-              value={showValue(
-                properties.bus_stops_500m
-              )}
-            />
-
-            <DetailRow
               label="Bus routes nearby"
               value={showValue(
                 properties.bus_routes_nearby
@@ -285,77 +473,122 @@ function DetailsPanel({
 
           <section className="feature-section">
             <p className="feature-section-title">
-              Priority scores
+              Intervention need
             </p>
 
-            <DetailRow
-              label="Bus priority"
-              value={showValue(
-                properties.bus_priority
-              )}
-            />
-
-            <DetailRow
-              label="Bike priority"
-              value={showValue(
-                properties.bike_priority
-              )}
-            />
-
-            <DetailRow
+            <PriorityMeter
               label="Mobility gap"
-              value={showValue(
+              score={
                 properties.mobility_gap
-              )}
+              }
             />
+
+            <PriorityMeter
+              label="Bus priority"
+              score={
+                properties.bus_priority
+              }
+            />
+
+            <PriorityMeter
+              label="Bike priority"
+              score={
+                properties.bike_priority
+              }
+            />
+
+            <p className="feature-context-note">
+              Higher scores indicate
+              greater intervention need.
+            </p>
           </section>
         </>
       )}
 
-      {type === 'Bus recommendation' && (
+      {type ===
+        'Bus recommendation' && (
         <>
+          <section className="feature-section">
+            <p className="feature-section-title">
+              Intervention priority
+            </p>
+
+            <PriorityMeter
+              label="Bus improvement"
+              score={
+                properties.priority
+              }
+            />
+          </section>
+
           <section className="feature-section">
             <p className="feature-section-title">
               Expected impact
             </p>
 
-            <DetailRow
-              label="Priority"
-              value={showValue(
-                properties.priority
-              )}
-            />
+            <div className="inspector-stat-grid">
+              <div className="inspector-stat">
+                <span>
+                  Population
+                  affected
+                </span>
 
-            <DetailRow
-              label="Population affected"
-              value={showValue(
-                properties.population_affected
-              )}
-            />
+                <strong>
+                  {showValue(
+                    properties.population_affected
+                  )}
+                </strong>
+              </div>
 
-            <DetailRow
-              label="Current access"
-              value={showValue(
-                properties.current_access_m,
-                ' m'
-              )}
-            />
+              <div className="inspector-stat inspector-stat-positive">
+                <span>
+                  Access
+                  improvement
+                </span>
 
-            <DetailRow
-              label="New access"
-              value={showValue(
-                properties.new_access_m,
-                ' m'
-              )}
-            />
+                <strong>
+                  {showValue(
+                    properties.access_improvement_m,
+                    ' m'
+                  )}
+                </strong>
+              </div>
+            </div>
 
-            <DetailRow
-              label="Access improvement"
-              value={showValue(
-                properties.access_improvement_m,
-                ' m'
-              )}
-            />
+            <div className="access-comparison">
+              <div>
+                <span>
+                  Current access
+                </span>
+
+                <strong>
+                  {showValue(
+                    properties.current_access_m,
+                    ' m'
+                  )}
+                </strong>
+              </div>
+
+              <span
+                className="access-comparison-arrow"
+                aria-hidden="true"
+              >
+                →
+              </span>
+
+              <div>
+                <span>
+                  New access
+                </span>
+
+                <strong>
+                  {showValue(
+                    properties.new_access_m,
+                    ' m'
+                  )}
+                </strong>
+              </div>
+            </div>
           </section>
 
           <section className="feature-section">
@@ -364,45 +597,84 @@ function DetailsPanel({
             </p>
 
             <ReasonList
-              reasons={properties.reason}
+              reasons={
+                properties.reason
+              }
             />
           </section>
         </>
       )}
 
-      {type === 'Bike recommendation' && (
+      {type ===
+        'Bike recommendation' && (
         <>
           <section className="feature-section">
             <p className="feature-section-title">
               Candidate corridor
             </p>
 
-            <DetailRow
-              label="Status"
-              value="Further engineering assessment"
-            />
+            <div className="engineering-status">
+              <span
+                className="engineering-status-icon"
+                aria-hidden="true"
+              >
+                ◇
+              </span>
 
-            <DetailRow
-              label="Priority"
-              value={showValue(
+              <div>
+                <strong>
+                  Further engineering
+                  assessment
+                </strong>
+
+                <span>
+                  Candidate corridor,
+                  not a construction-ready
+                  plan.
+                </span>
+              </div>
+            </div>
+
+            <PriorityMeter
+              label="Corridor priority"
+              score={
                 properties.priority
-              )}
+              }
             />
+          </section>
 
-            <DetailRow
-              label="Length"
-              value={showValue(
-                properties.length_m,
-                ' m'
-              )}
-            />
+          <section className="feature-section">
+            <p className="feature-section-title">
+              Corridor context
+            </p>
 
-            <DetailRow
-              label="Coverage gain"
-              value={showValue(
-                properties.population_coverage_gain
-              )}
-            />
+            <div className="inspector-stat-grid">
+              <div className="inspector-stat">
+                <span>
+                  Length
+                </span>
+
+                <strong>
+                  {showValue(
+                    properties.length_m,
+                    ' m'
+                  )}
+                </strong>
+              </div>
+
+              <div className="inspector-stat">
+                <span>
+                  Population
+                  coverage gain
+                </span>
+
+                <strong>
+                  {showValue(
+                    properties.population_coverage_gain
+                  )}
+                </strong>
+              </div>
+            </div>
 
             <DetailRow
               label="Start"
@@ -427,7 +699,9 @@ function DetailsPanel({
             </p>
 
             <ReasonList
-              reasons={properties.reason}
+              reasons={
+                properties.reason
+              }
             />
           </section>
         </>

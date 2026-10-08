@@ -43,6 +43,10 @@ import {
   validateSummary,
 } from './data/validateData'
 
+import {
+  applyQaScenario,
+} from './data/applyQaScenario'
+
 const INITIAL_LAYER_VISIBILITY = {
   busStops: true,
   busRoutes: true,
@@ -104,7 +108,9 @@ function App() {
   const [
     selectedMetric,
     setSelectedMetric,
-  ] = useState('mobility_gap')
+  ] = useState(
+    'mobility_gap'
+  )
 
   const [theme, setTheme] =
     useState('light')
@@ -115,7 +121,7 @@ function App() {
   const [
     inspectorCollapsed,
     setInspectorCollapsed,
-  ] = useState(false)
+  ] = useState(true)
 
   const [
     focusRequest,
@@ -132,8 +138,10 @@ function App() {
   const [loading, setLoading] =
     useState(true)
 
-  const [loadErrors, setLoadErrors] =
-    useState([])
+  const [
+    loadErrors,
+    setLoadErrors,
+  ] = useState([])
 
   useEffect(() => {
     let cancelled = false
@@ -146,21 +154,37 @@ function App() {
       setter
     ) {
       try {
-        const data =
+        const loadedData =
           await loader(source)
 
+        /*
+          Validate the real input first.
+
+          QA transformations happen only after
+          valid contract-compliant data has
+          been loaded.
+        */
+
         const validatedData =
-          validator(data)
+          validator(loadedData)
+
+        const qaData =
+          applyQaScenario(
+            label,
+            validatedData
+          )
 
         if (!cancelled) {
-          setter(validatedData)
+          setter(qaData)
         }
       } catch (error) {
         console.error(error)
 
         if (!cancelled) {
           setLoadErrors(
-            (currentErrors) => [
+            (
+              currentErrors
+            ) => [
               ...currentErrors,
               `${label}: ${error.message}`,
             ]
@@ -193,7 +217,8 @@ function App() {
         loadDataset(
           'Metro stations',
           loadGeoJson,
-          DATA_SOURCES.metroStations,
+          DATA_SOURCES
+            .metroStations,
           validateMetroStations,
           setMetroStations
         ),
@@ -256,114 +281,174 @@ function App() {
   const handleClearSelection =
     useCallback(() => {
       setSelectedFeature(null)
+      setInspectorCollapsed(true)
     }, [])
 
-  function handleMapSelect(selection) {
-    setSelectedFeature(selection)
-    setInspectorCollapsed(false)
-  }
+  const handleMapSelect =
+    useCallback(
+      (selection) => {
+        setSelectedFeature(
+          selection
+        )
 
-  function handleRankingSelect(
-    selection
-  ) {
-    const layerKey =
-      FEATURE_LAYER_MAP[
-        selection.type
-      ]
+        setInspectorCollapsed(
+          false
+        )
+      },
+      []
+    )
 
-    if (layerKey) {
-      setLayerVisibility(
-        (current) => ({
-          ...current,
-          [layerKey]: true,
-        })
-      )
-    }
+  const handleRankingSelect =
+    useCallback(
+      (selection) => {
+        const layerKey =
+          FEATURE_LAYER_MAP[
+            selection.type
+          ]
 
-    setSelectedFeature(selection)
-    setInspectorCollapsed(false)
+        if (layerKey) {
+          setLayerVisibility(
+            (current) => ({
+              ...current,
+              [layerKey]:
+                true,
+            })
+          )
+        }
 
-    if (
-      selection.focusMap &&
-      selection.feature
-    ) {
-      setFocusRequest(
-        (currentRequest) => ({
-          type: 'feature',
-          feature:
-            selection.feature,
-          sequence:
-            (currentRequest
-              ?.sequence ?? 0) + 1,
-        })
-      )
-    }
-  }
+        setSelectedFeature(
+          selection
+        )
 
-  function handleLayerToggle(
-    layerKey
-  ) {
-    setLayerVisibility(
-      (current) => {
-        const nextVisible =
-          !current[layerKey]
+        setInspectorCollapsed(
+          false
+        )
 
         if (
-          !nextVisible &&
-          selectedFeature &&
-          FEATURE_LAYER_MAP[
-            selectedFeature.type
-          ] === layerKey
+          selection.focusMap &&
+          selection.feature
         ) {
-          setSelectedFeature(null)
-        }
+          setFocusRequest(
+            (
+              currentRequest
+            ) => ({
+              type: 'feature',
 
-        return {
-          ...current,
-          [layerKey]: nextVisible,
-        }
-      }
-    )
-  }
+              feature:
+                selection.feature,
 
-  function handleResetView() {
-    setFocusRequest(
-      (currentRequest) => ({
-        type: 'overview',
-        sequence:
-          (currentRequest
-            ?.sequence ?? 0) + 1,
-      })
+              sequence:
+                (currentRequest
+                  ?.sequence ??
+                  0) + 1,
+            })
+          )
+        }
+      },
+      []
     )
-  }
+
+  const handleLayerToggle =
+    useCallback(
+      (layerKey) => {
+        setLayerVisibility(
+          (current) => {
+            const nextVisible =
+              !current[layerKey]
+
+            const selectedLayerKey =
+              selectedFeature
+                ? FEATURE_LAYER_MAP[
+                    selectedFeature
+                      .type
+                  ]
+                : null
+
+            if (
+              !nextVisible &&
+              selectedLayerKey ===
+                layerKey
+            ) {
+              setSelectedFeature(
+                null
+              )
+
+              setInspectorCollapsed(
+                true
+              )
+            }
+
+            return {
+              ...current,
+              [layerKey]:
+                nextVisible,
+            }
+          }
+        )
+      },
+      [selectedFeature]
+    )
+
+  const handleResetView =
+    useCallback(() => {
+      setFocusRequest(
+        (
+          currentRequest
+        ) => ({
+          type: 'overview',
+
+          sequence:
+            (currentRequest
+              ?.sequence ??
+              0) + 1,
+        })
+      )
+    }, [])
+
+  const handleToggleTheme =
+    useCallback(() => {
+      setTheme(
+        (currentTheme) =>
+          currentTheme ===
+          'light'
+            ? 'dark'
+            : 'light'
+      )
+    }, [])
+
+  const handleToggleFocusMode =
+    useCallback(() => {
+      setFocusMode(
+        (current) =>
+          !current
+      )
+    }, [])
 
   return (
     <div
       className="app"
       data-theme={theme}
-      data-focus-mode={focusMode}
+      data-focus-mode={
+        focusMode
+      }
     >
       <AppHeader
         theme={theme}
-        onToggleTheme={() =>
-          setTheme(
-            (currentTheme) =>
-              currentTheme ===
-              'light'
-                ? 'dark'
-                : 'light'
-          )
+        onToggleTheme={
+          handleToggleTheme
         }
-        focusMode={focusMode}
-        onToggleFocusMode={() =>
-          setFocusMode(
-            (current) => !current
-          )
+        focusMode={
+          focusMode
+        }
+        onToggleFocusMode={
+          handleToggleFocusMode
         }
         onResetView={
           handleResetView
         }
-        dataMode={DATA_MODE}
+        dataMode={
+          DATA_MODE
+        }
       />
 
       <MapContainer
@@ -380,12 +465,18 @@ function App() {
         />
 
         <MapLayers
-          busStops={busStops}
-          busRoutes={busRoutes}
+          busStops={
+            busStops
+          }
+          busRoutes={
+            busRoutes
+          }
           metroStations={
             metroStations
           }
-          cycleways={cycleways}
+          cycleways={
+            cycleways
+          }
           grid={grid}
           busRecommendations={
             busRecommendations
@@ -424,7 +515,9 @@ function App() {
       </MapContainer>
 
       <SummaryPanel
-        summary={summary}
+        summary={
+          summary
+        }
       />
 
       <PriorityRanking
@@ -450,10 +543,14 @@ function App() {
           inspectorCollapsed
         }
         onCollapse={() =>
-          setInspectorCollapsed(true)
+          setInspectorCollapsed(
+            true
+          )
         }
         onOpen={() =>
-          setInspectorCollapsed(false)
+          setInspectorCollapsed(
+            false
+          )
         }
       />
 
@@ -476,8 +573,12 @@ function App() {
       />
 
       <DataStatus
-        loading={loading}
-        errors={loadErrors}
+        loading={
+          loading
+        }
+        errors={
+          loadErrors
+        }
       />
     </div>
   )

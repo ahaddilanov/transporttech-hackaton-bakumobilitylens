@@ -1,3 +1,7 @@
+/* ================================================== */
+/* TransportTech — PriorityRanking.css                */
+/* ================================================== */
+
 .priority-ranking {
   position: absolute;
   top: 88px;
@@ -5,25 +9,29 @@
 
   z-index: 1100;
 
-  width: 320px;
-  max-height: calc(100vh - 330px);
+  width: 330px;
+  max-height: calc(100vh - 120px);
 
-  display: flex;
-  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 
-  padding: 18px;
+  padding: 17px;
 
-  overflow: hidden;
-
-  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
+
+  background: var(--surface);
+  color: var(--text-primary);
 
   box-shadow: var(--shadow-panel);
   backdrop-filter: blur(16px);
 
-  color: var(--text-primary);
+  scrollbar-width: thin;
 }
+
+/* ================================================== */
+/* Header                                             */
+/* ================================================== */
 
 .ranking-header {
   display: flex;
@@ -32,16 +40,16 @@
 
   gap: 12px;
 
-  margin-bottom: 14px;
+  margin-bottom: 13px;
 }
 
 .ranking-eyebrow {
-  margin: 0 0 4px;
+  margin: 0 0 3px;
 
   color: var(--text-muted);
 
-  font-size: 10px;
-  font-weight: 750;
+  font-size: 8px;
+  font-weight: 850;
   letter-spacing: 0.09em;
 
   text-transform: uppercase;
@@ -53,16 +61,17 @@
   color: var(--text-primary);
 
   font-size: 18px;
+  font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.025em;
 }
 
-.ranking-subtitle {
+.ranking-description {
   margin: 5px 0 0;
 
   color: var(--text-muted);
 
-  font-size: 11px;
+  font-size: 8px;
   line-height: 1.4;
 }
 
@@ -70,10 +79,10 @@
   display: grid;
   place-items: center;
 
-  flex: 0 0 auto;
-
   width: 30px;
   height: 30px;
+
+  flex: 0 0 auto;
 
   padding: 0;
 
@@ -84,112 +93,52 @@
   color: var(--text-secondary);
 
   font-family: inherit;
-  font-size: 20px;
-  line-height: 1;
+  font-size: 18px;
 
   cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
 }
 
 .ranking-collapse-button:hover {
   background: var(--surface-muted);
   color: var(--text-primary);
+
+  transform: translateY(-1px);
 }
 
-.ranking-collapsed {
-  position: absolute;
-  top: 88px;
-  left: 62px;
-
-  z-index: 1100;
-
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-
-  gap: 10px;
-
-  min-width: 178px;
-
-  padding: 9px 10px;
-
-  border: 1px solid var(--border);
-  border-radius: 13px;
-
-  background: var(--surface);
-  color: var(--text-primary);
-
-  box-shadow: var(--shadow-panel);
-  backdrop-filter: blur(16px);
-
-  font-family: inherit;
-  text-align: left;
-
-  cursor: pointer;
-}
-
-.ranking-collapsed:hover {
-  background: var(--surface-soft);
-}
-
-.ranking-collapsed-rank {
-  display: grid;
-  place-items: center;
-
-  width: 32px;
-  height: 32px;
-
-  border-radius: 9px;
-
-  background: var(--accent);
-  color: var(--accent-contrast);
-
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.ranking-collapsed-copy {
-  display: flex;
-  flex-direction: column;
-
-  min-width: 0;
-}
-
-.ranking-collapsed-copy strong {
-  color: var(--text-primary);
-
-  font-size: 12px;
-}
-
-.ranking-collapsed-copy span {
-  margin-top: 2px;
-
-  color: var(--text-muted);
-
-  font-size: 9px;
-}
-
-.ranking-collapse-arrow {
-  color: var(--text-muted);
-
-  font-size: 20px;
-}
+/* ================================================== */
+/* Bus / cycling tabs                                 */
+/* ================================================== */
 
 .ranking-tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
 
   gap: 4px;
 
   margin-bottom: 12px;
   padding: 4px;
 
-  background: var(--surface-soft);
   border: 1px solid var(--border);
   border-radius: 10px;
+
+  background: var(--surface-soft);
 }
 
 .ranking-tabs button {
-  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  min-height: 31px;
+
+  padding: 0 8px;
 
   border: 0;
   border-radius: 7px;
@@ -198,14 +147,27 @@
   color: var(--text-secondary);
 
   font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 750;
 
   cursor: pointer;
 }
 
-.ranking-tabs button:hover {
-  color: var(--text-primary);
+.ranking-tabs button span {
+  display: grid;
+  place-items: center;
+
+  min-width: 18px;
+  height: 18px;
+
+  padding: 0 5px;
+
+  border-radius: 999px;
+
+  background: var(--surface-muted);
+  color: var(--text-muted);
+
+  font-size: 7px;
 }
 
 .ranking-tabs button.active {
@@ -213,32 +175,38 @@
   color: var(--accent-contrast);
 }
 
-.ranking-list {
-  min-height: 0;
+.ranking-tabs button.active span {
+  background:
+    rgba(255, 255, 255, 0.18);
+  color: inherit;
+}
 
+.app[data-theme="dark"]
+  .ranking-tabs button.active span {
+  background:
+    rgba(15, 23, 42, 0.14);
+}
+
+/* ================================================== */
+/* Ranking cards                                      */
+/* ================================================== */
+
+.ranking-list {
   display: flex;
   flex-direction: column;
 
   gap: 7px;
-
-  overflow-y: auto;
-
-  padding-right: 3px;
 }
 
 .ranking-card {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
-
-  gap: 10px;
-  align-items: center;
+  display: block;
 
   width: 100%;
 
-  padding: 10px;
+  padding: 11px;
 
   border: 1px solid var(--border);
-  border-radius: 11px;
+  border-radius: 12px;
 
   background: var(--surface-soft);
   color: var(--text-primary);
@@ -256,89 +224,126 @@
 }
 
 .ranking-card:hover {
-  background: var(--surface-muted);
-
   transform: translateY(-1px);
+
+  border-color:
+    rgba(59, 130, 246, 0.3);
+
+  background: var(--surface-muted);
 }
 
 .ranking-card.selected {
-  border-color: var(--text-primary);
+  border-color: #3b82f6;
 
   box-shadow:
-    inset 0 0 0 1px var(--text-primary),
-    0 6px 16px rgba(15, 23, 42, 0.08);
+    0 0 0 2px
+      rgba(59, 130, 246, 0.12);
+}
+
+.ranking-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  margin-bottom: 8px;
 }
 
 .ranking-position {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-
-  color: var(--text-primary);
-
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.05em;
-}
-
-.ranking-position span {
-  margin-right: 1px;
-
-  color: var(--text-muted);
-
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.ranking-card-content {
-  min-width: 0;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.ranking-card-type {
   color: var(--text-muted);
 
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.055em;
+  font-weight: 850;
+}
+
+.ranking-need {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 19px;
+
+  padding: 0 6px;
+
+  border-radius: 999px;
+
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: 0.035em;
 
   text-transform: uppercase;
 }
 
-.ranking-card-content strong {
-  margin-top: 2px;
+.ranking-card-heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
 
-  overflow: hidden;
+  gap: 10px;
+  align-items: start;
+}
 
+.ranking-card-heading > div:first-child {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.ranking-card-heading
+  > div:first-child
+  > strong {
   color: var(--text-primary);
 
-  font-size: 12px;
-  font-weight: 750;
-
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 760;
+  line-height: 1.3;
 }
 
-.ranking-priority-label {
+.ranking-card-heading
+  > div:first-child
+  > span {
   margin-top: 3px;
 
-  color: var(--text-secondary);
+  color: var(--text-muted);
 
-  font-size: 10px;
+  font-size: 7px;
 }
 
-.ranking-progress {
-  width: 100%;
-  height: 3px;
+.ranking-score {
+  display: flex;
+  align-items: baseline;
 
-  margin-top: 7px;
+  gap: 2px;
+}
+
+.ranking-score strong {
+  color: var(--text-primary);
+
+  font-size: 18px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.ranking-score span {
+  color: var(--text-muted);
+
+  font-size: 7px;
+}
+
+/* ================================================== */
+/* Priority bar                                       */
+/* ================================================== */
+
+.ranking-progress {
+  height: 5px;
+
+  margin-top: 9px;
 
   overflow: hidden;
 
-  background: var(--surface-muted);
   border-radius: 999px;
+
+  background: var(--surface-muted);
 }
 
 .ranking-progress span {
@@ -346,60 +351,135 @@
 
   height: 100%;
 
-  background: var(--text-primary);
   border-radius: inherit;
 }
 
-.ranking-score {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-
-  min-width: 42px;
+.ranking-score-low {
+  background: #22c55e;
+  color: #15803d;
 }
 
-.ranking-score strong {
+.ranking-score-moderate {
+  background: #eab308;
+  color: #a16207;
+}
+
+.ranking-score-high {
+  background: #f97316;
+  color: #c2410c;
+}
+
+.ranking-score-very-high {
+  background: #dc2626;
+  color: #b91c1c;
+}
+
+.ranking-score-unavailable {
+  background: #9ca3af;
+  color: #64748b;
+}
+
+.ranking-need.ranking-score-low,
+.ranking-need.ranking-score-moderate,
+.ranking-need.ranking-score-high,
+.ranking-need.ranking-score-very-high,
+.ranking-need.ranking-score-unavailable {
+  background:
+    color-mix(
+      in srgb,
+      currentColor 10%,
+      transparent
+    );
+}
+
+/* ================================================== */
+/* Decision metrics                                   */
+/* ================================================== */
+
+.ranking-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 6px;
+
+  margin-top: 9px;
+}
+
+.ranking-metrics div {
+  min-width: 0;
+
+  padding: 7px 8px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: var(--surface);
+}
+
+.ranking-metrics span {
+  display: block;
+
+  color: var(--text-muted);
+
+  font-size: 7px;
+  line-height: 1.25;
+}
+
+.ranking-metrics strong {
+  display: block;
+
+  margin-top: 3px;
+
   color: var(--text-primary);
 
-  font-size: 18px;
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-size: 10px;
+  font-weight: 780;
+
+  overflow-wrap: anywhere;
 }
 
-.ranking-score span {
-  margin-top: 2px;
+.ranking-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 8px;
+  padding-top: 7px;
+
+  border-top: 1px solid var(--border);
 
   color: var(--text-muted);
 
-  font-size: 9px;
+  font-size: 7px;
+  font-weight: 700;
 }
 
-.ranking-empty {
-  margin: 14px 0;
-
-  color: var(--text-muted);
-
-  font-size: 12px;
-  text-align: center;
+.ranking-card.selected
+  .ranking-card-action {
+  color: #2563eb;
 }
+
+/* ================================================== */
+/* Footer                                             */
+/* ================================================== */
 
 .ranking-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  gap: 12px;
+  gap: 10px;
 
-  margin-top: 12px;
-  padding-top: 11px;
+  margin-top: 11px;
+  padding-top: 10px;
 
   border-top: 1px solid var(--border);
 }
 
-.ranking-footer span {
+.ranking-footer > span {
   color: var(--text-muted);
 
-  font-size: 10px;
+  font-size: 8px;
 }
 
 .ranking-footer button {
@@ -411,8 +491,178 @@
   color: var(--text-primary);
 
   font-family: inherit;
-  font-size: 10px;
-  font-weight: 750;
+  font-size: 8px;
+  font-weight: 800;
 
   cursor: pointer;
+}
+
+.ranking-footer button:hover {
+  text-decoration: underline;
+}
+
+.ranking-engineering-note {
+  margin: 9px 0 0;
+
+  padding: 8px 9px;
+
+  border: 1px solid
+    rgba(8, 145, 178, 0.16);
+  border-radius: 8px;
+
+  background:
+    rgba(8, 145, 178, 0.06);
+  color: var(--text-muted);
+
+  font-size: 7px;
+  line-height: 1.4;
+}
+
+/* ================================================== */
+/* Empty state                                        */
+/* ================================================== */
+
+.ranking-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 24px 12px;
+
+  text-align: center;
+}
+
+.ranking-empty-icon {
+  display: grid;
+  place-items: center;
+
+  width: 38px;
+  height: 38px;
+
+  margin-bottom: 9px;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  background: var(--surface-soft);
+  color: var(--text-muted);
+
+  font-size: 15px;
+}
+
+.ranking-empty strong {
+  color: var(--text-primary);
+
+  font-size: 10px;
+}
+
+.ranking-empty p {
+  max-width: 220px;
+
+  margin: 5px 0 0;
+
+  color: var(--text-muted);
+
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+/* ================================================== */
+/* Collapsed ranking                                  */
+/* ================================================== */
+
+.ranking-collapsed {
+  position: absolute;
+  top: 88px;
+  left: 62px;
+
+  z-index: 1100;
+
+  display: grid;
+  grid-template-columns:
+    auto 1fr auto;
+  align-items: center;
+
+  gap: 9px;
+
+  min-width: 182px;
+
+  padding: 9px 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: var(--surface);
+  color: var(--text-primary);
+
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(16px);
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.ranking-collapsed:hover {
+  background: var(--surface-soft);
+
+  transform: translateY(-1px);
+}
+
+.ranking-collapsed-rank {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 9px;
+
+  background: var(--accent);
+  color: var(--accent-contrast);
+
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.ranking-collapsed-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.ranking-collapsed-copy strong {
+  color: var(--text-primary);
+
+  font-size: 11px;
+}
+
+.ranking-collapsed-copy span {
+  margin-top: 2px;
+
+  color: var(--text-muted);
+
+  font-size: 8px;
+}
+
+.ranking-collapsed-arrow {
+  color: var(--text-muted);
+
+  font-size: 16px;
+}
+
+/* ================================================== */
+/* Reduced motion                                     */
+/* ================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .ranking-card,
+  .ranking-collapse-button,
+  .ranking-collapsed {
+    transition: none;
+  }
 }
