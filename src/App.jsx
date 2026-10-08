@@ -7,6 +7,7 @@ import DetailsPanel from './components/DetailsPanel'
 import MapLayers from './components/MapLayers'
 import PriorityLegend from './components/PriorityLegend'
 import ScoreSelector from './components/ScoreSelector'
+import SummaryPanel from './components/SummaryPanel'
 import { loadGeoJson } from './data/loadGeoJson'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   const [grid, setGrid] = useState(null)
   const [busRecommendations, setBusRecommendations] = useState(null)
   const [bikeRecommendations, setBikeRecommendations] = useState(null)
+  const [summary, setSummary] = useState(null)
 
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
@@ -49,6 +51,17 @@ function App() {
     loadGeoJson('/data/bike_recommendations.geojson')
       .then(setBikeRecommendations)
       .catch(console.error)
+
+    fetch('/data/summary.json')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to load summary.json')
+        }
+
+        return response.json()
+      })
+      .then(setSummary)
+      .catch(console.error)
   }, [])
 
   return (
@@ -80,6 +93,8 @@ function App() {
         selectedMetric={selectedMetric}
         onChange={setSelectedMetric}
       />
+
+      <SummaryPanel summary={summary} />
 
       <DetailsPanel selectedFeature={selectedFeature} />
 
