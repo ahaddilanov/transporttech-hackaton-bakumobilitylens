@@ -6,6 +6,7 @@ import './App.css'
 import AppHeader from './components/AppHeader'
 import DataStatus from './components/DataStatus'
 import DetailsPanel from './components/DetailsPanel'
+import LayerPanel from './components/LayerPanel'
 import MapFocusController from './components/MapFocusController'
 import MapLayers from './components/MapLayers'
 import PriorityLegend from './components/PriorityLegend'
@@ -26,6 +27,26 @@ import {
   validateSummary,
 } from './data/validateData'
 
+const INITIAL_LAYER_VISIBILITY = {
+  busStops: true,
+  busRoutes: true,
+  metroStations: true,
+  cycleways: true,
+  grid: true,
+  busRecommendations: true,
+  bikeRecommendations: true,
+}
+
+const FEATURE_LAYER_MAP = {
+  'Bus stop': 'busStops',
+  'Bus route': 'busRoutes',
+  'Metro station': 'metroStations',
+  Cycleway: 'cycleways',
+  'Grid cell': 'grid',
+  'Bus recommendation': 'busRecommendations',
+  'Bike recommendation': 'bikeRecommendations',
+}
+
 function App() {
   const [busStops, setBusStops] = useState(null)
   const [busRoutes, setBusRoutes] = useState(null)
@@ -40,10 +61,17 @@ function App() {
 
   const [selectedFeature, setSelectedFeature] =
     useState(null)
+
   const [selectedMetric, setSelectedMetric] =
     useState('mobility_gap')
+
   const [theme, setTheme] = useState('light')
-  const [focusRequest, setFocusRequest] = useState(null)
+
+  const [focusRequest, setFocusRequest] =
+    useState(null)
+
+  const [layerVisibility, setLayerVisibility] =
+    useState(INITIAL_LAYER_VISIBILITY)
 
   const [loading, setLoading] = useState(true)
   const [loadErrors, setLoadErrors] = useState([])
@@ -89,6 +117,7 @@ function App() {
           validateBusStops,
           setBusStops
         ),
+
         loadDataset(
           'Bus routes',
           loadGeoJson,
@@ -96,6 +125,7 @@ function App() {
           validateBusRoutes,
           setBusRoutes
         ),
+
         loadDataset(
           'Metro stations',
           loadGeoJson,
@@ -103,6 +133,7 @@ function App() {
           validateMetroStations,
           setMetroStations
         ),
+
         loadDataset(
           'Cycleways',
           loadGeoJson,
@@ -110,6 +141,7 @@ function App() {
           validateCycleways,
           setCycleways
         ),
+
         loadDataset(
           'Analysis grid',
           loadGeoJson,
@@ -117,6 +149,7 @@ function App() {
           validateGrid,
           setGrid
         ),
+
         loadDataset(
           'Bus recommendations',
           loadGeoJson,
@@ -124,6 +157,7 @@ function App() {
           validateBusRecommendations,
           setBusRecommendations
         ),
+
         loadDataset(
           'Bike recommendations',
           loadGeoJson,
@@ -131,6 +165,7 @@ function App() {
           validateBikeRecommendations,
           setBikeRecommendations
         ),
+
         loadDataset(
           'Summary',
           loadJson,
@@ -153,9 +188,22 @@ function App() {
   }, [])
 
   function handleRankingSelect(selection) {
+    const layerKey =
+      FEATURE_LAYER_MAP[selection.type]
+
+    if (layerKey) {
+      setLayerVisibility((current) => ({
+        ...current,
+        [layerKey]: true,
+      }))
+    }
+
     setSelectedFeature(selection)
 
-    if (selection.focusMap && selection.feature) {
+    if (
+      selection.focusMap &&
+      selection.feature
+    ) {
       setFocusRequest((currentRequest) => ({
         feature: selection.feature,
         sequence:
@@ -164,8 +212,32 @@ function App() {
     }
   }
 
+  function handleLayerToggle(layerKey) {
+    setLayerVisibility((current) => {
+      const nextVisible = !current[layerKey]
+
+      if (
+        !nextVisible &&
+        selectedFeature &&
+        FEATURE_LAYER_MAP[
+          selectedFeature.type
+        ] === layerKey
+      ) {
+        setSelectedFeature(null)
+      }
+
+      return {
+        ...current,
+        [layerKey]: nextVisible,
+      }
+    })
+  }
+
   return (
-    <div className="app" data-theme={theme}>
+    <div
+      className="app"
+      data-theme={theme}
+    >
       <AppHeader
         theme={theme}
         onToggleTheme={() =>
@@ -196,6 +268,7 @@ function App() {
           busRecommendations={busRecommendations}
           bikeRecommendations={bikeRecommendations}
           selectedMetric={selectedMetric}
+          visibility={layerVisibility}
           onSelect={setSelectedFeature}
         />
 
@@ -224,11 +297,18 @@ function App() {
 
       <DetailsPanel
         selectedFeature={selectedFeature}
-        onClose={() => setSelectedFeature(null)}
+        onClose={() =>
+          setSelectedFeature(null)
+        }
       />
 
       <PriorityLegend
         selectedMetric={selectedMetric}
+      />
+
+      <LayerPanel
+        visibility={layerVisibility}
+        onToggle={handleLayerToggle}
       />
 
       <DataStatus

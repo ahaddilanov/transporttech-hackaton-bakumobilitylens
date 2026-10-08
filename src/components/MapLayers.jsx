@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import { GeoJSON, LayersControl } from 'react-leaflet'
+import { GeoJSON } from 'react-leaflet'
 
 function getPriorityColor(score) {
   if (score === null || score === undefined) {
@@ -30,6 +30,7 @@ function MapLayers({
   busRecommendations,
   bikeRecommendations,
   selectedMetric,
+  visibility,
   onSelect,
 }) {
   function selectFeature(type, feature) {
@@ -41,87 +42,79 @@ function MapLayers({
   }
 
   return (
-    <LayersControl position="topleft">
-      {grid && (
-        <LayersControl.Overlay checked name="Analysis Grid">
-          <GeoJSON
-            key={selectedMetric}
-            data={grid}
-            style={(feature) => ({
-              color: '#374151',
-              weight: 1,
-              fillColor: getPriorityColor(
-                feature.properties[selectedMetric]
-              ),
-              fillOpacity: 0.55,
-            })}
-            onEachFeature={(feature, layer) => {
-              layer.on('click', () => {
-                selectFeature('Grid cell', feature)
-              })
-            }}
-          />
-        </LayersControl.Overlay>
+    <>
+      {visibility.grid && grid && (
+        <GeoJSON
+          key={selectedMetric}
+          data={grid}
+          style={(feature) => ({
+            color: '#374151',
+            weight: 1,
+            fillColor: getPriorityColor(
+              feature.properties[selectedMetric]
+            ),
+            fillOpacity: 0.55,
+          })}
+          onEachFeature={(feature, layer) => {
+            layer.on('click', () => {
+              selectFeature('Grid cell', feature)
+            })
+          }}
+        />
       )}
 
-      {busRoutes && (
-        <LayersControl.Overlay checked name="Bus Routes">
-          <GeoJSON
-            data={busRoutes}
-            style={{
-              color: '#2563eb',
-              weight: 4,
-              opacity: 0.8,
-            }}
-            onEachFeature={(feature, layer) => {
-              layer.on('click', () => {
-                selectFeature('Bus route', feature)
-              })
-            }}
-          />
-        </LayersControl.Overlay>
+      {visibility.busRoutes && busRoutes && (
+        <GeoJSON
+          data={busRoutes}
+          style={{
+            color: '#2563eb',
+            weight: 4,
+            opacity: 0.8,
+          }}
+          onEachFeature={(feature, layer) => {
+            layer.on('click', () => {
+              selectFeature('Bus route', feature)
+            })
+          }}
+        />
       )}
 
-      {cycleways && (
-        <LayersControl.Overlay checked name="Cycleways">
-          <GeoJSON
-            data={cycleways}
-            style={{
-              color: '#16a34a',
-              weight: 4,
-              opacity: 0.8,
-            }}
-            onEachFeature={(feature, layer) => {
-              layer.on('click', () => {
-                selectFeature('Cycleway', feature)
-              })
-            }}
-          />
-        </LayersControl.Overlay>
+      {visibility.cycleways && cycleways && (
+        <GeoJSON
+          data={cycleways}
+          style={{
+            color: '#16a34a',
+            weight: 4,
+            opacity: 0.8,
+          }}
+          onEachFeature={(feature, layer) => {
+            layer.on('click', () => {
+              selectFeature('Cycleway', feature)
+            })
+          }}
+        />
       )}
 
-      {busStops && (
-        <LayersControl.Overlay checked name="Bus Stops">
-          <GeoJSON
-            data={busStops}
-            pointToLayer={(feature, latlng) =>
-              L.circleMarker(latlng, {
-                radius: 7,
-                weight: 2,
-                fillOpacity: 0.8,
-              })
-            }
-            onEachFeature={(feature, layer) => {
-              layer.on('click', () => {
-                selectFeature('Bus stop', feature)
-              })
-            }}
-          />
-        </LayersControl.Overlay>
+      {visibility.busStops && busStops && (
+        <GeoJSON
+          data={busStops}
+          pointToLayer={(feature, latlng) =>
+            L.circleMarker(latlng, {
+              radius: 7,
+              weight: 2,
+              fillOpacity: 0.8,
+            })
+          }
+          onEachFeature={(feature, layer) => {
+            layer.on('click', () => {
+              selectFeature('Bus stop', feature)
+            })
+          }}
+        />
       )}
 
-      {metroStations && (
-        <LayersControl.Overlay checked name="Metro Stations">
+      {visibility.metroStations &&
+        metroStations && (
           <GeoJSON
             data={metroStations}
             pointToLayer={(feature, latlng) =>
@@ -133,15 +126,17 @@ function MapLayers({
             }
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                selectFeature('Metro station', feature)
+                selectFeature(
+                  'Metro station',
+                  feature
+                )
               })
             }}
           />
-        </LayersControl.Overlay>
-      )}
+        )}
 
-      {busRecommendations && (
-        <LayersControl.Overlay checked name="Bus Recommendations">
+      {visibility.busRecommendations &&
+        busRecommendations && (
           <GeoJSON
             data={busRecommendations}
             pointToLayer={(feature, latlng) =>
@@ -155,15 +150,17 @@ function MapLayers({
             }
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                selectFeature('Bus recommendation', feature)
+                selectFeature(
+                  'Bus recommendation',
+                  feature
+                )
               })
             }}
           />
-        </LayersControl.Overlay>
-      )}
+        )}
 
-      {bikeRecommendations && (
-        <LayersControl.Overlay checked name="Bike Recommendations">
+      {visibility.bikeRecommendations &&
+        bikeRecommendations && (
           <GeoJSON
             data={bikeRecommendations}
             style={{
@@ -174,13 +171,15 @@ function MapLayers({
             }}
             onEachFeature={(feature, layer) => {
               layer.on('click', () => {
-                selectFeature('Bike recommendation', feature)
+                selectFeature(
+                  'Bike recommendation',
+                  feature
+                )
               })
             }}
           />
-        </LayersControl.Overlay>
-      )}
-    </LayersControl>
+        )}
+    </>
   )
 }
 
