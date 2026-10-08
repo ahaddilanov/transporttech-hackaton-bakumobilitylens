@@ -3,6 +3,7 @@ import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './App.css'
 
+import AppHeader from './components/AppHeader'
 import DataStatus from './components/DataStatus'
 import DetailsPanel from './components/DetailsPanel'
 import MapLayers from './components/MapLayers'
@@ -35,6 +36,7 @@ function App() {
 
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
+  const [theme, setTheme] = useState('light')
 
   const [loading, setLoading] = useState(true)
   const [loadErrors, setLoadErrors] = useState([])
@@ -144,7 +146,16 @@ function App() {
   }, [])
 
   return (
-    <div className="app">
+    <div className="app" data-theme={theme}>
+      <AppHeader
+        theme={theme}
+        onToggleTheme={() =>
+          setTheme((currentTheme) =>
+            currentTheme === 'light' ? 'dark' : 'light'
+          )
+        }
+      />
+
       <MapContainer
         center={[40.4093, 49.8671]}
         zoom={12}
@@ -167,7 +178,9 @@ function App() {
           onSelect={setSelectedFeature}
         />
 
-        <SelectedFeatureLayer selectedFeature={selectedFeature} />
+        <SelectedFeatureLayer
+          selectedFeature={selectedFeature}
+        />
       </MapContainer>
 
       <ScoreSelector
@@ -177,7 +190,10 @@ function App() {
 
       <SummaryPanel summary={summary} />
 
-      <DetailsPanel selectedFeature={selectedFeature} />
+      <DetailsPanel
+        selectedFeature={selectedFeature}
+        onClose={() => setSelectedFeature(null)}
+      />
 
       <PriorityLegend selectedMetric={selectedMetric} />
 

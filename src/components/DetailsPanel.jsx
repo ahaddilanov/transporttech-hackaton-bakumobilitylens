@@ -1,3 +1,5 @@
+import './DetailsPanel.css'
+
 function showValue(value, suffix = '') {
   if (value === null || value === undefined) {
     return 'Unavailable'
@@ -6,208 +8,271 @@ function showValue(value, suffix = '') {
   return `${value}${suffix}`
 }
 
-function DetailsPanel({ selectedFeature }) {
-  const properties = selectedFeature?.properties
+function DetailRow({ label, value }) {
+  return (
+    <div className="feature-row">
+      <span>{label}</span>
+      <span className="feature-value">{value}</span>
+    </div>
+  )
+}
 
-  const hasName =
-    selectedFeature &&
-    ['Bus stop', 'Bus route', 'Metro station', 'Cycleway'].includes(
-      selectedFeature.type
-    )
+function ReasonList({ reasons }) {
+  if (!Array.isArray(reasons) || reasons.length === 0) {
+    return <p className="feature-panel-empty">Unavailable</p>
+  }
 
   return (
-    <aside className="details-panel">
-      <h2>Feature details</h2>
+    <ul className="feature-reasons">
+      {reasons.map((reason) => (
+        <li key={reason}>{reason}</li>
+      ))}
+    </ul>
+  )
+}
 
-      {selectedFeature ? (
+function DetailsPanel({ selectedFeature, onClose }) {
+  if (!selectedFeature) {
+    return (
+      <aside className="feature-panel">
+        <div className="feature-panel-header">
+          <div>
+            <p className="feature-panel-eyebrow">Map inspector</p>
+            <h2>Feature details</h2>
+          </div>
+        </div>
+
+        <p className="feature-panel-empty">
+          Select a map feature to inspect its information.
+        </p>
+      </aside>
+    )
+  }
+
+  const { type, properties } = selectedFeature
+
+  const hasName = [
+    'Bus stop',
+    'Bus route',
+    'Metro station',
+    'Cycleway',
+  ].includes(type)
+
+  return (
+    <aside className="feature-panel">
+      <div className="feature-panel-header">
+        <div>
+          <p className="feature-panel-eyebrow">{type}</p>
+          <h2>
+            {hasName
+              ? properties.name ?? 'Unnamed feature'
+              : properties.id}
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          className="feature-panel-close"
+          onClick={onClose}
+          aria-label="Close feature details"
+        >
+          ×
+        </button>
+      </div>
+
+      <section className="feature-section">
+        <p className="feature-section-title">Identity</p>
+
+        <DetailRow label="Type" value={type} />
+        <DetailRow label="ID" value={properties.id} />
+
+        {hasName && (
+          <DetailRow
+            label="Name"
+            value={properties.name ?? 'Unavailable'}
+          />
+        )}
+      </section>
+
+      {type === 'Bus route' && (
+        <section className="feature-section">
+          <p className="feature-section-title">Route context</p>
+
+          <DetailRow
+            label="Route reference"
+            value={properties.route_ref ?? 'Unavailable'}
+          />
+
+          <DetailRow
+            label="Avg. daily validations"
+            value={showValue(properties.avg_daily_validations)}
+          />
+        </section>
+      )}
+
+      {type === 'Metro station' && (
+        <section className="feature-section">
+          <p className="feature-section-title">Station context</p>
+
+          <DetailRow
+            label="Avg. daily entries"
+            value={showValue(properties.avg_daily_entries)}
+          />
+        </section>
+      )}
+
+      {type === 'Cycleway' && (
+        <section className="feature-section">
+          <p className="feature-section-title">Infrastructure</p>
+
+          <DetailRow
+            label="Length"
+            value={showValue(properties.length_m, ' m')}
+          />
+        </section>
+      )}
+
+      {type === 'Grid cell' && (
         <>
-          <p>
-            <strong>Type:</strong> {selectedFeature.type}
-          </p>
+          <section className="feature-section">
+            <p className="feature-section-title">Accessibility</p>
 
-          <p>
-            <strong>ID:</strong> {properties.id}
-          </p>
+            <DetailRow
+              label="Population"
+              value={showValue(properties.population)}
+            />
 
-          {hasName && (
-            <p>
-              <strong>Name:</strong> {properties.name ?? 'Unavailable'}
-            </p>
-          )}
+            <DetailRow
+              label="Nearest bus stop"
+              value={showValue(properties.nearest_bus_stop_m, ' m')}
+            />
 
-          {selectedFeature.type === 'Bus route' && (
-            <>
-              <p>
-                <strong>Route ref:</strong>{' '}
-                {properties.route_ref ?? 'Unavailable'}
-              </p>
+            <DetailRow
+              label="Nearest metro"
+              value={showValue(properties.nearest_metro_m, ' m')}
+            />
 
-              <p>
-                <strong>Avg. daily validations:</strong>{' '}
-                {properties.avg_daily_validations ?? 'Unavailable'}
-              </p>
-            </>
-          )}
+            <DetailRow
+              label="Nearest cycleway"
+              value={showValue(properties.nearest_cycleway_m, ' m')}
+            />
 
-          {selectedFeature.type === 'Metro station' && (
-            <p>
-              <strong>Avg. daily entries:</strong>{' '}
-              {properties.avg_daily_entries ?? 'Unavailable'}
-            </p>
-          )}
+            <DetailRow
+              label="Bus stops within 500 m"
+              value={showValue(properties.bus_stops_500m)}
+            />
 
-          {selectedFeature.type === 'Cycleway' && (
-            <p>
-              <strong>Length:</strong>{' '}
-              {showValue(properties.length_m, ' m')}
-            </p>
-          )}
+            <DetailRow
+              label="Bus routes nearby"
+              value={showValue(properties.bus_routes_nearby)}
+            />
 
-          {selectedFeature.type === 'Grid cell' && (
-            <>
-              <p>
-                <strong>Population:</strong>{' '}
-                {showValue(properties.population)}
-              </p>
+            <DetailRow
+              label="POIs nearby"
+              value={showValue(properties.pois_nearby)}
+            />
+          </section>
 
-              <p>
-                <strong>Nearest bus stop:</strong>{' '}
-                {showValue(properties.nearest_bus_stop_m, ' m')}
-              </p>
+          <section className="feature-section">
+            <p className="feature-section-title">Priority scores</p>
 
-              <p>
-                <strong>Nearest metro:</strong>{' '}
-                {showValue(properties.nearest_metro_m, ' m')}
-              </p>
+            <DetailRow
+              label="Bus priority"
+              value={showValue(properties.bus_priority)}
+            />
 
-              <p>
-                <strong>Nearest cycleway:</strong>{' '}
-                {showValue(properties.nearest_cycleway_m, ' m')}
-              </p>
+            <DetailRow
+              label="Bike priority"
+              value={showValue(properties.bike_priority)}
+            />
 
-              <p>
-                <strong>Bus stops within 500 m:</strong>{' '}
-                {showValue(properties.bus_stops_500m)}
-              </p>
-
-              <p>
-                <strong>Bus routes nearby:</strong>{' '}
-                {showValue(properties.bus_routes_nearby)}
-              </p>
-
-              <p>
-                <strong>POIs nearby:</strong>{' '}
-                {showValue(properties.pois_nearby)}
-              </p>
-
-              <p>
-                <strong>Bus priority:</strong>{' '}
-                {showValue(properties.bus_priority)}
-              </p>
-
-              <p>
-                <strong>Bike priority:</strong>{' '}
-                {showValue(properties.bike_priority)}
-              </p>
-
-              <p>
-                <strong>Mobility gap:</strong>{' '}
-                {showValue(properties.mobility_gap)}
-              </p>
-            </>
-          )}
-
-          {selectedFeature.type === 'Bus recommendation' && (
-            <>
-              <p>
-                <strong>Priority:</strong>{' '}
-                {showValue(properties.priority)}
-              </p>
-
-              <p>
-                <strong>Population affected:</strong>{' '}
-                {showValue(properties.population_affected)}
-              </p>
-
-              <p>
-                <strong>Current access:</strong>{' '}
-                {showValue(properties.current_access_m, ' m')}
-              </p>
-
-              <p>
-                <strong>New access:</strong>{' '}
-                {showValue(properties.new_access_m, ' m')}
-              </p>
-
-              <p>
-                <strong>Access improvement:</strong>{' '}
-                {showValue(properties.access_improvement_m, ' m')}
-              </p>
-
-              <strong>Reason:</strong>
-
-              {Array.isArray(properties.reason) &&
-              properties.reason.length > 0 ? (
-                <ul>
-                  {properties.reason.map((reason) => (
-                    <li key={reason}>{reason}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Unavailable</p>
-              )}
-            </>
-          )}
-
-          {selectedFeature.type === 'Bike recommendation' && (
-            <>
-              <p>
-                <strong>Status:</strong>{' '}
-                Candidate corridor for further engineering assessment
-              </p>
-
-              <p>
-                <strong>Priority:</strong>{' '}
-                {showValue(properties.priority)}
-              </p>
-
-              <p>
-                <strong>Length:</strong>{' '}
-                {showValue(properties.length_m, ' m')}
-              </p>
-
-              <p>
-                <strong>Population coverage gain:</strong>{' '}
-                {showValue(properties.population_coverage_gain)}
-              </p>
-
-              <p>
-                <strong>Start:</strong>{' '}
-                {properties.start_name ?? 'Unavailable'}
-              </p>
-
-              <p>
-                <strong>End:</strong>{' '}
-                {properties.end_name ?? 'Unavailable'}
-              </p>
-
-              <strong>Reason:</strong>
-
-              {Array.isArray(properties.reason) &&
-              properties.reason.length > 0 ? (
-                <ul>
-                  {properties.reason.map((reason) => (
-                    <li key={reason}>{reason}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Unavailable</p>
-              )}
-            </>
-          )}
+            <DetailRow
+              label="Mobility gap"
+              value={showValue(properties.mobility_gap)}
+            />
+          </section>
         </>
-      ) : (
-        <p>Click a map feature to view its details.</p>
+      )}
+
+      {type === 'Bus recommendation' && (
+        <>
+          <section className="feature-section">
+            <p className="feature-section-title">Expected impact</p>
+
+            <DetailRow
+              label="Priority"
+              value={showValue(properties.priority)}
+            />
+
+            <DetailRow
+              label="Population affected"
+              value={showValue(properties.population_affected)}
+            />
+
+            <DetailRow
+              label="Current access"
+              value={showValue(properties.current_access_m, ' m')}
+            />
+
+            <DetailRow
+              label="New access"
+              value={showValue(properties.new_access_m, ' m')}
+            />
+
+            <DetailRow
+              label="Access improvement"
+              value={showValue(properties.access_improvement_m, ' m')}
+            />
+          </section>
+
+          <section className="feature-section">
+            <p className="feature-section-title">Why proposed</p>
+            <ReasonList reasons={properties.reason} />
+          </section>
+        </>
+      )}
+
+      {type === 'Bike recommendation' && (
+        <>
+          <section className="feature-section">
+            <p className="feature-section-title">Candidate corridor</p>
+
+            <DetailRow
+              label="Status"
+              value="Further engineering assessment"
+            />
+
+            <DetailRow
+              label="Priority"
+              value={showValue(properties.priority)}
+            />
+
+            <DetailRow
+              label="Length"
+              value={showValue(properties.length_m, ' m')}
+            />
+
+            <DetailRow
+              label="Coverage gain"
+              value={showValue(properties.population_coverage_gain)}
+            />
+
+            <DetailRow
+              label="Start"
+              value={properties.start_name ?? 'Unavailable'}
+            />
+
+            <DetailRow
+              label="End"
+              value={properties.end_name ?? 'Unavailable'}
+            />
+          </section>
+
+          <section className="feature-section">
+            <p className="feature-section-title">Why proposed</p>
+            <ReasonList reasons={properties.reason} />
+          </section>
+        </>
       )}
     </aside>
   )
