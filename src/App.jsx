@@ -5,6 +5,7 @@ import './App.css'
 
 import DetailsPanel from './components/DetailsPanel'
 import MapLayers from './components/MapLayers'
+import PriorityLegend from './components/PriorityLegend'
 import { loadGeoJson } from './data/loadGeoJson'
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
   const [busRoutes, setBusRoutes] = useState(null)
   const [metroStations, setMetroStations] = useState(null)
   const [cycleways, setCycleways] = useState(null)
+  const [grid, setGrid] = useState(null)
   const [selectedFeature, setSelectedFeature] = useState(null)
 
   useEffect(() => {
@@ -46,6 +48,14 @@ function App() {
       .catch((error) => {
         console.error(error)
       })
+
+    loadGeoJson('/data/grid.geojson')
+      .then((data) => {
+        setGrid(data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }, [])
 
   return (
@@ -65,11 +75,14 @@ function App() {
           busRoutes={busRoutes}
           metroStations={metroStations}
           cycleways={cycleways}
+          grid={grid}
           onSelect={setSelectedFeature}
         />
       </MapContainer>
 
       <DetailsPanel selectedFeature={selectedFeature} />
+
+      <PriorityLegend />
     </div>
   )
 }

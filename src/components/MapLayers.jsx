@@ -1,15 +1,60 @@
 import L from 'leaflet'
 import { GeoJSON, LayersControl } from 'react-leaflet'
 
+function getPriorityColor(score) {
+  if (score === null || score === undefined) {
+    return '#9ca3af'
+  }
+
+  if (score >= 75) {
+    return '#dc2626'
+  }
+
+  if (score >= 50) {
+    return '#f97316'
+  }
+
+  if (score >= 25) {
+    return '#eab308'
+  }
+
+  return '#22c55e'
+}
+
 function MapLayers({
   busStops,
   busRoutes,
   metroStations,
   cycleways,
+  grid,
   onSelect,
 }) {
   return (
     <LayersControl position="topleft">
+      {grid && (
+        <LayersControl.Overlay checked name="Mobility Gap">
+          <GeoJSON
+            data={grid}
+            style={(feature) => ({
+              color: '#374151',
+              weight: 1,
+              fillColor: getPriorityColor(
+                feature.properties.mobility_gap
+              ),
+              fillOpacity: 0.55,
+            })}
+            onEachFeature={(feature, layer) => {
+              layer.on('click', () => {
+                onSelect({
+                  type: 'Grid cell',
+                  properties: feature.properties,
+                })
+              })
+            }}
+          />
+        </LayersControl.Overlay>
+      )}
+
       {busRoutes && (
         <LayersControl.Overlay checked name="Bus Routes">
           <GeoJSON

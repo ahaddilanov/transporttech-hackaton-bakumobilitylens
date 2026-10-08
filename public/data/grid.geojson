@@ -1,0 +1,117 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "grid-001",
+        "population": 1850,
+        "nearest_bus_stop_m": 620,
+        "nearest_metro_m": 1450,
+        "nearest_cycleway_m": 900,
+        "bus_stops_500m": 0,
+        "bus_routes_nearby": 1,
+        "pois_nearby": 8,
+        "bus_priority": 82,
+        "bike_priority": 64,
+        "mobility_gap": 78
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [49.840, 40.420],
+            [49.850, 40.420],
+            [49.850, 40.428],
+            [49.840, 40.428],
+            [49.840, 40.420]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "grid-002",
+        "population": 2350,
+        "nearest_bus_stop_m": 280,
+        "nearest_metro_m": 700,
+        "nearest_cycleway_m": 520,
+        "bus_stops_500m": 3,
+        "bus_routes_nearby": 2,
+        "pois_nearby": 14,
+        "bus_priority": 38,
+        "bike_priority": 51,
+        "mobility_gap": 42
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [49.850, 40.420],
+            [49.860, 40.420],
+            [49.860, 40.428],
+            [49.850, 40.428],
+            [49.850, 40.420]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "grid-003",
+        "population": 960,
+        "nearest_bus_stop_m": 890,
+        "nearest_metro_m": 2100,
+        "nearest_cycleway_m": 1350,
+        "bus_stops_500m": 0,
+        "bus_routes_nearby": 0,
+        "pois_nearby": 4,
+        "bus_priority": 94,
+        "bike_priority": 88,
+        "mobility_gap": 92
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [49.840, 40.412],
+            [49.850, 40.412],
+            [49.850, 40.420],
+            [49.840, 40.420],
+            [49.840, 40.412]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "grid-004",
+        "population": null,
+        "nearest_bus_stop_m": 410,
+        "nearest_metro_m": null,
+        "nearest_cycleway_m": 760,
+        "bus_stops_500m": 1,
+        "bus_routes_nearby": 2,
+        "pois_nearby": null,
+        "bus_priority": 58,
+        "bike_priority": 72,
+        "mobility_gap": 63
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [49.850, 40.412],
+            [49.860, 40.412],
+            [49.860, 40.420],
+            [49.850, 40.420],
+            [49.850, 40.412]
+          ]
+        ]
+      }
+    }
+  ]
+}
