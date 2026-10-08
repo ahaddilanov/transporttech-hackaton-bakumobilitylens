@@ -15,50 +15,40 @@ function App() {
   const [metroStations, setMetroStations] = useState(null)
   const [cycleways, setCycleways] = useState(null)
   const [grid, setGrid] = useState(null)
+  const [busRecommendations, setBusRecommendations] = useState(null)
+  const [bikeRecommendations, setBikeRecommendations] = useState(null)
 
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
 
   useEffect(() => {
     loadGeoJson('/data/bus_stops.geojson')
-      .then((data) => {
-        setBusStops(data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+      .then(setBusStops)
+      .catch(console.error)
 
     loadGeoJson('/data/bus_routes.geojson')
-      .then((data) => {
-        setBusRoutes(data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+      .then(setBusRoutes)
+      .catch(console.error)
 
     loadGeoJson('/data/metro_stations.geojson')
-      .then((data) => {
-        setMetroStations(data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+      .then(setMetroStations)
+      .catch(console.error)
 
     loadGeoJson('/data/cycleways.geojson')
-      .then((data) => {
-        setCycleways(data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+      .then(setCycleways)
+      .catch(console.error)
 
     loadGeoJson('/data/grid.geojson')
-      .then((data) => {
-        setGrid(data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+      .then(setGrid)
+      .catch(console.error)
+
+    loadGeoJson('/data/bus_recommendations.geojson')
+      .then(setBusRecommendations)
+      .catch(console.error)
+
+    loadGeoJson('/data/bike_recommendations.geojson')
+      .then(setBikeRecommendations)
+      .catch(console.error)
   }, [])
 
   return (
@@ -79,6 +69,8 @@ function App() {
           metroStations={metroStations}
           cycleways={cycleways}
           grid={grid}
+          busRecommendations={busRecommendations}
+          bikeRecommendations={bikeRecommendations}
           selectedMetric={selectedMetric}
           onSelect={setSelectedFeature}
         />

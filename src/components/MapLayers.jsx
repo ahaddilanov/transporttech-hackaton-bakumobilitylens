@@ -27,6 +27,8 @@ function MapLayers({
   metroStations,
   cycleways,
   grid,
+  busRecommendations,
+  bikeRecommendations,
   selectedMetric,
   onSelect,
 }) {
@@ -137,6 +139,53 @@ function MapLayers({
               layer.on('click', () => {
                 onSelect({
                   type: 'Metro station',
+                  properties: feature.properties,
+                })
+              })
+            }}
+          />
+        </LayersControl.Overlay>
+      )}
+
+      {busRecommendations && (
+        <LayersControl.Overlay checked name="Bus Recommendations">
+          <GeoJSON
+            data={busRecommendations}
+            pointToLayer={(feature, latlng) =>
+              L.circleMarker(latlng, {
+                radius: 10,
+                color: '#7c3aed',
+                weight: 3,
+                fillColor: '#a78bfa',
+                fillOpacity: 0.9,
+              })
+            }
+            onEachFeature={(feature, layer) => {
+              layer.on('click', () => {
+                onSelect({
+                  type: 'Bus recommendation',
+                  properties: feature.properties,
+                })
+              })
+            }}
+          />
+        </LayersControl.Overlay>
+      )}
+
+      {bikeRecommendations && (
+        <LayersControl.Overlay checked name="Bike Recommendations">
+          <GeoJSON
+            data={bikeRecommendations}
+            style={{
+              color: '#0891b2',
+              weight: 6,
+              opacity: 0.9,
+              dashArray: '10 6',
+            }}
+            onEachFeature={(feature, layer) => {
+              layer.on('click', () => {
+                onSelect({
+                  type: 'Bike recommendation',
                   properties: feature.properties,
                 })
               })
