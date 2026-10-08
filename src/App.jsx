@@ -8,6 +8,7 @@ import MapLayers from './components/MapLayers'
 import PriorityLegend from './components/PriorityLegend'
 import ScoreSelector from './components/ScoreSelector'
 import SummaryPanel from './components/SummaryPanel'
+import { DATA_SOURCES } from './data/dataSources'
 import { loadGeoJson } from './data/loadGeoJson'
 
 function App() {
@@ -24,38 +25,38 @@ function App() {
   const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
 
   useEffect(() => {
-    loadGeoJson('/data/bus_stops.geojson')
+    loadGeoJson(DATA_SOURCES.busStops)
       .then(setBusStops)
       .catch(console.error)
 
-    loadGeoJson('/data/bus_routes.geojson')
+    loadGeoJson(DATA_SOURCES.busRoutes)
       .then(setBusRoutes)
       .catch(console.error)
 
-    loadGeoJson('/data/metro_stations.geojson')
+    loadGeoJson(DATA_SOURCES.metroStations)
       .then(setMetroStations)
       .catch(console.error)
 
-    loadGeoJson('/data/cycleways.geojson')
+    loadGeoJson(DATA_SOURCES.cycleways)
       .then(setCycleways)
       .catch(console.error)
 
-    loadGeoJson('/data/grid.geojson')
+    loadGeoJson(DATA_SOURCES.grid)
       .then(setGrid)
       .catch(console.error)
 
-    loadGeoJson('/data/bus_recommendations.geojson')
+    loadGeoJson(DATA_SOURCES.busRecommendations)
       .then(setBusRecommendations)
       .catch(console.error)
 
-    loadGeoJson('/data/bike_recommendations.geojson')
+    loadGeoJson(DATA_SOURCES.bikeRecommendations)
       .then(setBikeRecommendations)
       .catch(console.error)
 
-    fetch('/data/summary.json')
+    fetch(DATA_SOURCES.summary)
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to load summary.json')
+          throw new Error('Failed to load summary data')
         }
 
         return response.json()
