@@ -168,3 +168,32 @@
   font-size: 11px;
   color: #666;
 }
+
+.data-status {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  z-index: 1100;
+  max-width: 420px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+}
+
+.data-status-loading {
+  background: white;
+  color: #222;
+}
+
+.data-status-error {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fdba74;
+}
+
+.data-status-error ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}

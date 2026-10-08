@@ -3,13 +3,14 @@ import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './App.css'
 
+import DataStatus from './components/DataStatus'
 import DetailsPanel from './components/DetailsPanel'
 import MapLayers from './components/MapLayers'
 import PriorityLegend from './components/PriorityLegend'
 import ScoreSelector from './components/ScoreSelector'
 import SummaryPanel from './components/SummaryPanel'
 import { DATA_SOURCES } from './data/dataSources'
-import { loadGeoJson } from './data/loadGeoJson'
+import { loadGeoJson, loadJson } from './data/loadGeoJson'
 
 function App() {
   const [busStops, setBusStops] = useState(null)
@@ -24,45 +25,96 @@ function App() {
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
 
+  const [loading, setLoading] = useState(true)
+  const [loadErrors, setLoadErrors] = useState([])
+
   useEffect(() => {
-    loadGeoJson(DATA_SOURCES.busStops)
-      .then(setBusStops)
-      .catch(console.error)
+    let cancelled = false
 
-    loadGeoJson(DATA_SOURCES.busRoutes)
-      .then(setBusRoutes)
-      .catch(console.error)
+    async function loadDataset(label, loader, source, setter) {
+      try {
+        const data = await loader(source)
 
-    loadGeoJson(DATA_SOURCES.metroStations)
-      .then(setMetroStations)
-      .catch(console.error)
-
-    loadGeoJson(DATA_SOURCES.cycleways)
-      .then(setCycleways)
-      .catch(console.error)
-
-    loadGeoJson(DATA_SOURCES.grid)
-      .then(setGrid)
-      .catch(console.error)
-
-    loadGeoJson(DATA_SOURCES.busRecommendations)
-      .then(setBusRecommendations)
-      .catch(console.error)
-
-    loadGeoJson(DATA_SOURCES.bikeRecommendations)
-      .then(setBikeRecommendations)
-      .catch(console.error)
-
-    fetch(DATA_SOURCES.summary)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to load summary data')
+        if (!cancelled) {
+          setter(data)
         }
+      } catch (error) {
+        console.error(error)
 
-        return response.json()
-      })
-      .then(setSummary)
-      .catch(console.error)
+        if (!cancelled) {
+          setLoadErrors((currentErrors) => [
+            ...currentErrors,
+            label,
+          ])
+        }
+      }
+    }
+
+    async function loadAllData() {
+      setLoading(true)
+      setLoadErrors([])
+
+      await Promise.all([
+        loadDataset(
+          'Bus stops',
+          loadGeoJson,
+          DATA_SOURCES.busStops,
+          setBusStops
+        ),
+        loadDataset(
+          'Bus routes',
+          loadGeoJson,
+          DATA_SOURCES.busRoutes,
+          setBusRoutes
+        ),
+        loadDataset(
+          'Metro stations',
+          loadGeoJson,
+          DATA_SOURCES.metroStations,
+          setMetroStations
+        ),
+        loadDataset(
+          'Cycleways',
+          loadGeoJson,
+          DATA_SOURCES.cycleways,
+          setCycleways
+        ),
+        loadDataset(
+          'Analysis grid',
+          loadGeoJson,
+          DATA_SOURCES.grid,
+          setGrid
+        ),
+        loadDataset(
+          'Bus recommendations',
+          loadGeoJson,
+          DATA_SOURCES.busRecommendations,
+          setBusRecommendations
+        ),
+        loadDataset(
+          'Bike recommendations',
+          loadGeoJson,
+          DATA_SOURCES.bikeRecommendations,
+          setBikeRecommendations
+        ),
+        loadDataset(
+          'Summary',
+          loadJson,
+          DATA_SOURCES.summary,
+          setSummary
+        ),
+      ])
+
+      if (!cancelled) {
+        setLoading(false)
+      }
+    }
+
+    loadAllData()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (
@@ -100,6 +152,11 @@ function App() {
       <DetailsPanel selectedFeature={selectedFeature} />
 
       <PriorityLegend selectedMetric={selectedMetric} />
+
+      <DataStatus
+        loading={loading}
+        errors={loadErrors}
+      />
     </div>
   )
 }
