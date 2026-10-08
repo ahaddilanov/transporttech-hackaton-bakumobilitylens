@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react'
-import L from 'leaflet'
-import {
-  GeoJSON,
-  LayersControl,
-  MapContainer,
-  TileLayer,
-} from 'react-leaflet'
+import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import './App.css'
 
+import MapLayers from './components/MapLayers'
 import { loadGeoJson } from './data/loadGeoJson'
 
 function App() {
@@ -64,95 +59,13 @@ function App() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <LayersControl position="topleft">
-          {busRoutes && (
-            <LayersControl.Overlay checked name="Bus Routes">
-              <GeoJSON
-                data={busRoutes}
-                style={{
-                  color: '#2563eb',
-                  weight: 4,
-                  opacity: 0.8,
-                }}
-                onEachFeature={(feature, layer) => {
-                  layer.on('click', () => {
-                    setSelectedFeature({
-                      type: 'Bus route',
-                      properties: feature.properties,
-                    })
-                  })
-                }}
-              />
-            </LayersControl.Overlay>
-          )}
-
-          {cycleways && (
-            <LayersControl.Overlay checked name="Cycleways">
-              <GeoJSON
-                data={cycleways}
-                style={{
-                  color: '#16a34a',
-                  weight: 4,
-                  opacity: 0.8,
-                }}
-                onEachFeature={(feature, layer) => {
-                  layer.on('click', () => {
-                    setSelectedFeature({
-                      type: 'Cycleway',
-                      properties: feature.properties,
-                    })
-                  })
-                }}
-              />
-            </LayersControl.Overlay>
-          )}
-
-          {busStops && (
-            <LayersControl.Overlay checked name="Bus Stops">
-              <GeoJSON
-                data={busStops}
-                pointToLayer={(feature, latlng) =>
-                  L.circleMarker(latlng, {
-                    radius: 7,
-                    weight: 2,
-                    fillOpacity: 0.8,
-                  })
-                }
-                onEachFeature={(feature, layer) => {
-                  layer.on('click', () => {
-                    setSelectedFeature({
-                      type: 'Bus stop',
-                      properties: feature.properties,
-                    })
-                  })
-                }}
-              />
-            </LayersControl.Overlay>
-          )}
-
-          {metroStations && (
-            <LayersControl.Overlay checked name="Metro Stations">
-              <GeoJSON
-                data={metroStations}
-                pointToLayer={(feature, latlng) =>
-                  L.circleMarker(latlng, {
-                    radius: 9,
-                    weight: 3,
-                    fillOpacity: 0.9,
-                  })
-                }
-                onEachFeature={(feature, layer) => {
-                  layer.on('click', () => {
-                    setSelectedFeature({
-                      type: 'Metro station',
-                      properties: feature.properties,
-                    })
-                  })
-                }}
-              />
-            </LayersControl.Overlay>
-          )}
-        </LayersControl>
+        <MapLayers
+          busStops={busStops}
+          busRoutes={busRoutes}
+          metroStations={metroStations}
+          cycleways={cycleways}
+          onSelect={setSelectedFeature}
+        />
       </MapContainer>
 
       <aside className="details-panel">
