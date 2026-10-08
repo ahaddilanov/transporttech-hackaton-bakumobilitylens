@@ -52,25 +52,19 @@ function App() {
   const [metroStations, setMetroStations] = useState(null)
   const [cycleways, setCycleways] = useState(null)
   const [grid, setGrid] = useState(null)
-  const [busRecommendations, setBusRecommendations] =
-    useState(null)
-  const [bikeRecommendations, setBikeRecommendations] =
-    useState(null)
+  const [busRecommendations, setBusRecommendations] = useState(null)
+  const [bikeRecommendations, setBikeRecommendations] = useState(null)
   const [summary, setSummary] = useState(null)
 
-  const [selectedFeature, setSelectedFeature] =
-    useState(null)
-
-  const [selectedMetric, setSelectedMetric] =
-    useState('mobility_gap')
-
+  const [selectedFeature, setSelectedFeature] = useState(null)
+  const [selectedMetric, setSelectedMetric] = useState('mobility_gap')
   const [theme, setTheme] = useState('light')
+  const [focusMode, setFocusMode] = useState(false)
+  const [focusRequest, setFocusRequest] = useState(null)
 
-  const [focusRequest, setFocusRequest] =
-    useState(null)
-
-  const [layerVisibility, setLayerVisibility] =
-    useState(INITIAL_LAYER_VISIBILITY)
+  const [layerVisibility, setLayerVisibility] = useState(
+    INITIAL_LAYER_VISIBILITY
+  )
 
   const [loading, setLoading] = useState(true)
   const [loadErrors, setLoadErrors] = useState([])
@@ -187,8 +181,7 @@ function App() {
   }, [])
 
   function handleRankingSelect(selection) {
-    const layerKey =
-      FEATURE_LAYER_MAP[selection.type]
+    const layerKey = FEATURE_LAYER_MAP[selection.type]
 
     if (layerKey) {
       setLayerVisibility((current) => ({
@@ -199,14 +192,10 @@ function App() {
 
     setSelectedFeature(selection)
 
-    if (
-      selection.focusMap &&
-      selection.feature
-    ) {
+    if (selection.focusMap && selection.feature) {
       setFocusRequest((currentRequest) => ({
         feature: selection.feature,
-        sequence:
-          (currentRequest?.sequence ?? 0) + 1,
+        sequence: (currentRequest?.sequence ?? 0) + 1,
       }))
     }
   }
@@ -218,9 +207,7 @@ function App() {
       if (
         !nextVisible &&
         selectedFeature &&
-        FEATURE_LAYER_MAP[
-          selectedFeature.type
-        ] === layerKey
+        FEATURE_LAYER_MAP[selectedFeature.type] === layerKey
       ) {
         setSelectedFeature(null)
       }
@@ -236,15 +223,18 @@ function App() {
     <div
       className="app"
       data-theme={theme}
+      data-focus-mode={focusMode}
     >
       <AppHeader
         theme={theme}
         onToggleTheme={() =>
           setTheme((currentTheme) =>
-            currentTheme === 'light'
-              ? 'dark'
-              : 'light'
+            currentTheme === 'light' ? 'dark' : 'light'
           )
+        }
+        focusMode={focusMode}
+        onToggleFocusMode={() =>
+          setFocusMode((current) => !current)
         }
       />
 

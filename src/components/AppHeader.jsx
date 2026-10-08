@@ -1,4 +1,9 @@
-function AppHeader({ theme, onToggleTheme }) {
+function AppHeader({
+  theme,
+  onToggleTheme,
+  focusMode,
+  onToggleFocusMode,
+}) {
   return (
     <header className="app-header">
       <div className="brand">
@@ -16,22 +21,41 @@ function AppHeader({ theme, onToggleTheme }) {
         Urban accessibility & intervention planning
       </div>
 
-      <button
-        type="button"
-        className="theme-toggle"
-        onClick={onToggleTheme}
-        aria-label={`Switch to ${
-          theme === 'light' ? 'dark' : 'light'
-        } mode`}
-      >
-        <span className="theme-toggle-icon" aria-hidden="true">
-          {theme === 'light' ? '◐' : '☀'}
-        </span>
+      <div className="header-actions">
+        <button
+          type="button"
+          className={`focus-mode-toggle ${
+            focusMode ? 'active' : ''
+          }`}
+          onClick={onToggleFocusMode}
+        >
+          <span aria-hidden="true">
+            {focusMode ? '↙' : '⌗'}
+          </span>
 
-        <span>
-          {theme === 'light' ? 'Dark' : 'Light'}
-        </span>
-      </button>
+          {focusMode ? 'Restore tools' : 'Focus map'}
+        </button>
+
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={onToggleTheme}
+          aria-label={`Switch to ${
+            theme === 'light' ? 'dark' : 'light'
+          } mode`}
+        >
+          <span
+            className="theme-toggle-icon"
+            aria-hidden="true"
+          >
+            {theme === 'light' ? '◐' : '☀'}
+          </span>
+
+          <span>
+            {theme === 'light' ? 'Dark' : 'Light'}
+          </span>
+        </button>
+      </div>
     </header>
   )
 }

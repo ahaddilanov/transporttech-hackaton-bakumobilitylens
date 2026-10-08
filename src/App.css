@@ -632,3 +632,74 @@
 .app .leaflet-top {
   top: 78px;
 }
+
+/* -------------------------------------------------- */
+/* Header actions                                     */
+/* -------------------------------------------------- */
+
+.header-actions {
+  justify-self: end;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+.focus-mode-toggle {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  height: 36px;
+
+  padding: 0 11px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface-soft);
+  color: var(--text-secondary);
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.focus-mode-toggle:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+
+  transform: translateY(-1px);
+}
+
+.focus-mode-toggle.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+}
+
+/* -------------------------------------------------- */
+/* Map focus mode                                     */
+/* -------------------------------------------------- */
+
+.app[data-focus-mode="true"] .priority-ranking,
+.app[data-focus-mode="true"] .ranking-collapsed,
+.app[data-focus-mode="true"] .summary-panel,
+.app[data-focus-mode="true"] .summary-collapsed,
+.app[data-focus-mode="true"] .feature-panel,
+.app[data-focus-mode="true"] .inspector-collapsed,
+.app[data-focus-mode="true"] .analysis-panel,
+.app[data-focus-mode="true"] .analysis-collapsed,
+.app[data-focus-mode="true"] .layer-panel,
+.app[data-focus-mode="true"] .layers-collapsed {
+  display: none;
+}
