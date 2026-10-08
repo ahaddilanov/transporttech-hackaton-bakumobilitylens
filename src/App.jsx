@@ -11,6 +11,16 @@ import ScoreSelector from './components/ScoreSelector'
 import SummaryPanel from './components/SummaryPanel'
 import { DATA_SOURCES } from './data/dataSources'
 import { loadGeoJson, loadJson } from './data/loadGeoJson'
+import {
+  validateBikeRecommendations,
+  validateBusRecommendations,
+  validateBusRoutes,
+  validateBusStops,
+  validateCycleways,
+  validateGrid,
+  validateMetroStations,
+  validateSummary,
+} from './data/validateData'
 
 function App() {
   const [busStops, setBusStops] = useState(null)
@@ -31,12 +41,19 @@ function App() {
   useEffect(() => {
     let cancelled = false
 
-    async function loadDataset(label, loader, source, setter) {
+    async function loadDataset(
+      label,
+      loader,
+      source,
+      validator,
+      setter
+    ) {
       try {
         const data = await loader(source)
+        const validatedData = validator(data)
 
         if (!cancelled) {
-          setter(data)
+          setter(validatedData)
         }
       } catch (error) {
         console.error(error)
@@ -44,7 +61,7 @@ function App() {
         if (!cancelled) {
           setLoadErrors((currentErrors) => [
             ...currentErrors,
-            label,
+            `${label}: ${error.message}`,
           ])
         }
       }
@@ -59,48 +76,56 @@ function App() {
           'Bus stops',
           loadGeoJson,
           DATA_SOURCES.busStops,
+          validateBusStops,
           setBusStops
         ),
         loadDataset(
           'Bus routes',
           loadGeoJson,
           DATA_SOURCES.busRoutes,
+          validateBusRoutes,
           setBusRoutes
         ),
         loadDataset(
           'Metro stations',
           loadGeoJson,
           DATA_SOURCES.metroStations,
+          validateMetroStations,
           setMetroStations
         ),
         loadDataset(
           'Cycleways',
           loadGeoJson,
           DATA_SOURCES.cycleways,
+          validateCycleways,
           setCycleways
         ),
         loadDataset(
           'Analysis grid',
           loadGeoJson,
           DATA_SOURCES.grid,
+          validateGrid,
           setGrid
         ),
         loadDataset(
           'Bus recommendations',
           loadGeoJson,
           DATA_SOURCES.busRecommendations,
+          validateBusRecommendations,
           setBusRecommendations
         ),
         loadDataset(
           'Bike recommendations',
           loadGeoJson,
           DATA_SOURCES.bikeRecommendations,
+          validateBikeRecommendations,
           setBikeRecommendations
         ),
         loadDataset(
           'Summary',
           loadJson,
           DATA_SOURCES.summary,
+          validateSummary,
           setSummary
         ),
       ])
