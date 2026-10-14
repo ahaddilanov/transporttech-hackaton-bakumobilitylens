@@ -93,9 +93,8 @@ function LayerPanel({
           <h2>Layers</h2>
 
           <p className="layer-panel-intro">
-            Existing infrastructure,
-            analysis and proposed
-            interventions.
+            Real baseline infrastructure
+            and accessibility analysis.
           </p>
         </div>
 
@@ -124,7 +123,7 @@ function LayerPanel({
 
         <LayerToggle
           label="Bus stops"
-          description="Existing stop locations"
+          description="Mapped OSM stop locations"
           symbol="bus-stop"
           checked={visibility.busStops}
           onChange={() =>
@@ -134,7 +133,7 @@ function LayerPanel({
 
         <LayerToggle
           label="Bus routes"
-          description="Existing route geometry"
+          description="AYNA route geometry"
           symbol="bus-route"
           checked={visibility.busRoutes}
           onChange={() =>
@@ -144,7 +143,7 @@ function LayerPanel({
 
         <LayerToggle
           label="Metro stations"
-          description="Existing metro access"
+          description="Metro station locations"
           symbol="metro"
           checked={
             visibility.metroStations
@@ -156,7 +155,7 @@ function LayerPanel({
 
         <LayerToggle
           label="Cycleways"
-          description="Existing cycling infrastructure"
+          description="Mapped bicycle-lane features"
           symbol="cycleway"
           checked={visibility.cycleways}
           onChange={() =>
@@ -178,51 +177,11 @@ function LayerPanel({
 
         <LayerToggle
           label="Priority grid"
-          description="Current selected analysis score"
+          description="Current selected 0–100 need score"
           symbol="grid"
           checked={visibility.grid}
           onChange={() =>
             onToggle('grid')
-          }
-        />
-      </section>
-
-      <section className="layer-section">
-        <div className="layer-section-heading">
-          <span className="layer-section-status layer-section-proposed">
-            Proposed
-          </span>
-
-          <p className="layer-section-title">
-            Improvements
-          </p>
-        </div>
-
-        <LayerToggle
-          label="Candidate bus improvements"
-          description="Public-transport interventions"
-          symbol="bus-recommendation"
-          checked={
-            visibility.busRecommendations
-          }
-          onChange={() =>
-            onToggle(
-              'busRecommendations'
-            )
-          }
-        />
-
-        <LayerToggle
-          label="Candidate bicycle corridors"
-          description="Further engineering assessment"
-          symbol="bike-recommendation"
-          checked={
-            visibility.bikeRecommendations
-          }
-          onChange={() =>
-            onToggle(
-              'bikeRecommendations'
-            )
           }
         />
       </section>
@@ -233,9 +192,10 @@ function LayerPanel({
         </span>
 
         <p>
-          Proposed bicycle corridors are
-          candidates for further engineering
-          assessment.
+          Baseline sources include WorldPop,
+          OpenStreetMap, AYNA-attributed linework
+          and OpenData.az. Coverage and provenance
+          limitations still apply.
         </p>
       </div>
     </aside>

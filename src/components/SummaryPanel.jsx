@@ -117,8 +117,8 @@ function SummaryPanel({ summary }) {
           </h2>
 
           <p className="summary-subtitle">
-            Current accessibility and
-            intervention-priority summary.
+            Real backend baseline for Baku
+            accessibility and priority analysis.
           </p>
         </div>
 
@@ -154,20 +154,30 @@ function SummaryPanel({ summary }) {
         />
 
         <SummaryMetric
-          label="High bus need"
+          label="Backend high bus"
           value={showNumber(
             summary.high_bus_priority_cells
           )}
-          description="Cells with high bus intervention priority"
+          description={
+            summary.high_priority_threshold !== null &&
+            summary.high_priority_threshold !== undefined
+              ? `Reporting rule: score ≥ ${summary.high_priority_threshold}`
+              : 'Backend-reported high-priority cells'
+          }
           emphasis="bus"
         />
 
         <SummaryMetric
-          label="High cycling need"
+          label="Backend high cycling"
           value={showNumber(
             summary.high_bike_priority_cells
           )}
-          description="Cells with high cycling intervention priority"
+          description={
+            summary.high_priority_threshold !== null &&
+            summary.high_priority_threshold !== undefined
+              ? `Reporting rule: score ≥ ${summary.high_priority_threshold}`
+              : 'Backend-reported high-priority cells'
+          }
           emphasis="bike"
         />
       </div>

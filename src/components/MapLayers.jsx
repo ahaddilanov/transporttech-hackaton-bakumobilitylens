@@ -27,6 +27,18 @@ const RECOMMENDATIONS_PANE_STYLE = {
   zIndex: 370,
 }
 
+/*
+  The real baseline grid contains 35,029 polygons. Rendering those as
+  individual SVG DOM nodes is unnecessarily expensive, so only the analysis
+  grid uses Leaflet's Canvas renderer. Existing transport features remain SVG
+  so their keyboard focus behavior is preserved.
+*/
+const GRID_RENDERER = L.canvas({
+  pane: 'analysis-grid-pane',
+  padding: 0.5,
+  tolerance: 2,
+})
+
 function getPriorityColor(score) {
   if (
     score === null ||
@@ -272,6 +284,7 @@ function MapLayers({
                 selectedMetric
               }
               data={grid}
+              renderer={GRID_RENDERER}
               style={(
                 feature
               ) => ({
@@ -303,44 +316,34 @@ function MapLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  'Analysis cell',
-                  [
-                    `ID: ${
-                      properties.id
-                    }`,
-                    `${
-                      METRIC_LABELS[
-                        selectedMetric
-                      ]
-                    }: ${showScore(
-                      properties[
-                        selectedMetric
-                      ]
-                    )}`,
-                  ]
-                )
-
-                makeKeyboardAccessible(
-                  layer,
-                  `Analysis cell ${
-                    properties.id
-                  }. ${
-                    METRIC_LABELS[
-                      selectedMetric
-                    ]
-                  }: ${showScore(
-                    properties[
-                      selectedMetric
-                    ]
-                  )}`,
-                  activate
-                )
-
                 layer.on(
                   'mouseover',
-                  () => {
+                  (event) => {
+                    if (!layer.getTooltip()) {
+                      bindTooltip(
+                        layer,
+                        'Analysis cell',
+                        [
+                          `ID: ${
+                            properties.id
+                          }`,
+                          `${
+                            METRIC_LABELS[
+                              selectedMetric
+                            ]
+                          }: ${showScore(
+                            properties[
+                              selectedMetric
+                            ]
+                          )}`,
+                        ]
+                      )
+                    }
+
+                    layer.openTooltip(
+                      event.latlng
+                    )
+
                     layer.setStyle({
                       weight: 1.4,
                       opacity: 0.82,
@@ -353,6 +356,8 @@ function MapLayers({
                 layer.on(
                   'mouseout',
                   () => {
+                    layer.closeTooltip()
+
                     layer.setStyle({
                       color:
                         '#475569',
@@ -425,7 +430,7 @@ function MapLayers({
                     `Route: ${showValue(
                       properties.route_ref
                     )}`,
-                    `Daily validations: ${showValue(
+                    `Route avg. daily validations: ${showValue(
                       properties.avg_daily_validations
                     )}`,
                   ]

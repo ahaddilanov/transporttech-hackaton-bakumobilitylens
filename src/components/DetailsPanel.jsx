@@ -12,6 +12,24 @@ function showValue(value, suffix = '') {
   return `${value}${suffix}`
 }
 
+function showCoverageValue(value) {
+  if (value === null || value === undefined) {
+    return 'Unavailable'
+  }
+
+  return `${(value * 100).toFixed(1)}%`
+}
+
+function showQualityLabel(value) {
+  if (value === null || value === undefined) {
+    return 'Unavailable'
+  }
+
+  return String(value)
+    .replaceAll('_', ' ')
+    .replace(/^./, (character) => character.toUpperCase())
+}
+
 function getPriorityLabel(score) {
   if (score === null || score === undefined) {
     return 'Unavailable'
@@ -260,9 +278,8 @@ function DetailsPanel({
           </strong>
 
           <p>
-            Select a grid cell,
-            transport feature or
-            recommendation to inspect
+            Select a grid cell or
+            transport feature to inspect
             its information.
           </p>
         </div>
@@ -502,6 +519,62 @@ function DetailsPanel({
               greater intervention need.
             </p>
           </section>
+
+          {(Object.prototype.hasOwnProperty.call(
+            properties,
+            'scoring_quality'
+          ) ||
+            Object.prototype.hasOwnProperty.call(
+              properties,
+              'coverage_status'
+            ) ||
+            Object.prototype.hasOwnProperty.call(
+              properties,
+              'valid_pixel_fraction'
+            )) && (
+            <section className="feature-section">
+              <p className="feature-section-title">
+                Data quality
+              </p>
+
+              <DetailRow
+                label="Scoring quality"
+                value={showQualityLabel(
+                  properties.scoring_quality
+                )}
+              />
+
+              <DetailRow
+                label="Coverage status"
+                value={showQualityLabel(
+                  properties.coverage_status
+                )}
+              />
+
+              <DetailRow
+                label="Valid population-pixel coverage"
+                value={showCoverageValue(
+                  properties.valid_pixel_fraction
+                )}
+              />
+
+              {properties.scoring_model_version && (
+                <DetailRow
+                  label="Scoring model"
+                  value={
+                    properties.scoring_model_version
+                  }
+                />
+              )}
+
+              <p className="feature-context-note">
+                Missing population coverage is
+                unavailable, not zero. Partial
+                population-pixel coverage should
+                be interpreted with caution.
+              </p>
+            </section>
+          )}
         </>
       )}
 

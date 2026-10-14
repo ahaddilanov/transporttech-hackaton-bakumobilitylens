@@ -1,7 +1,1 @@
-{
-  "generated_at": "2026-10-08T12:00:00Z",
-  "grid_cells": 4,
-  "population_estimate": 5160,
-  "high_bus_priority_cells": 2,
-  "high_bike_priority_cells": 2
-}
+{"generated_at":"2026-10-13T15:40:34Z","grid_cells":35029,"population_estimate":2898185.146992981,"high_bus_priority_cells":416,"high_bike_priority_cells":1948,"high_priority_threshold":60,"high_priority_rule":"score >=60; null scores excluded","null_population_cells":15917,"population_cells_with_estimates":19112,"population_estimate_definition":"sum of available WorldPop 2026 modeled cell counts; missing coverage not zero or extrapolated","layer_counts":{"grid":35029,"bus_stops":1414,"bus_routes":243,"metro_stations":27,"cycleways":60},"scoring_model_version":"baku-priority-v1.0","scoring_quality_counts":{"unknown_population":15917,"partial_population_pixel_coverage":3000,"low_population_pixel_coverage":3224,"full_population_pixel_coverage":12888},"distance_method":"straight_line_distance_from_grid_representative_point","distance_units":"meters","output_crs":"EPSG:4326","coordinate_order":"[longitude, latitude]","route_display_simplification_m":5.0}

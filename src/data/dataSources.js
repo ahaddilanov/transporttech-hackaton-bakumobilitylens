@@ -28,3 +28,13 @@ export const DATA_MODE = API_BASE_URL ? 'api' : 'static'
 
 export const DATA_SOURCES =
   DATA_MODE === 'api' ? API_SOURCES : STATIC_SOURCES
+
+/*
+  The first real backend package is baseline-only.
+  Recommendation datasets are intentionally not loaded or displayed until
+  the backend exports them under Contract V1.
+*/
+export const DATA_CAPABILITIES = {
+  busRecommendations: false,
+  bikeRecommendations: false,
+}

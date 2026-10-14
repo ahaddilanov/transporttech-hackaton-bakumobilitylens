@@ -18,7 +18,6 @@ import LayerPanel from './components/LayerPanel'
 import MapFocusController from './components/MapFocusController'
 import MapLayers from './components/MapLayers'
 import MapSelectionController from './components/MapSelectionController'
-import PriorityRanking from './components/PriorityRanking'
 import SelectedFeatureLayer from './components/SelectedFeatureLayer'
 import SummaryPanel from './components/SummaryPanel'
 
@@ -33,8 +32,6 @@ import {
 } from './data/loadGeoJson'
 
 import {
-  validateBikeRecommendations,
-  validateBusRecommendations,
   validateBusRoutes,
   validateBusStops,
   validateCycleways,
@@ -53,8 +50,6 @@ const INITIAL_LAYER_VISIBILITY = {
   metroStations: true,
   cycleways: true,
   grid: true,
-  busRecommendations: true,
-  bikeRecommendations: true,
 }
 
 const FEATURE_LAYER_MAP = {
@@ -63,10 +58,6 @@ const FEATURE_LAYER_MAP = {
   'Metro station': 'metroStations',
   Cycleway: 'cycleways',
   'Grid cell': 'grid',
-  'Bus recommendation':
-    'busRecommendations',
-  'Bike recommendation':
-    'bikeRecommendations',
 }
 
 function App() {
@@ -86,16 +77,6 @@ function App() {
 
   const [grid, setGrid] =
     useState(null)
-
-  const [
-    busRecommendations,
-    setBusRecommendations,
-  ] = useState(null)
-
-  const [
-    bikeRecommendations,
-    setBikeRecommendations,
-  ] = useState(null)
 
   const [summary, setSummary] =
     useState(null)
@@ -156,14 +137,6 @@ function App() {
       try {
         const loadedData =
           await loader(source)
-
-        /*
-          Validate the real input first.
-
-          QA transformations happen only after
-          valid contract-compliant data has
-          been loaded.
-        */
 
         const validatedData =
           validator(loadedData)
@@ -240,24 +213,6 @@ function App() {
         ),
 
         loadDataset(
-          'Bus recommendations',
-          loadGeoJson,
-          DATA_SOURCES
-            .busRecommendations,
-          validateBusRecommendations,
-          setBusRecommendations
-        ),
-
-        loadDataset(
-          'Bike recommendations',
-          loadGeoJson,
-          DATA_SOURCES
-            .bikeRecommendations,
-          validateBikeRecommendations,
-          setBikeRecommendations
-        ),
-
-        loadDataset(
           'Summary',
           loadJson,
           DATA_SOURCES.summary,
@@ -294,56 +249,6 @@ function App() {
         setInspectorCollapsed(
           false
         )
-      },
-      []
-    )
-
-  const handleRankingSelect =
-    useCallback(
-      (selection) => {
-        const layerKey =
-          FEATURE_LAYER_MAP[
-            selection.type
-          ]
-
-        if (layerKey) {
-          setLayerVisibility(
-            (current) => ({
-              ...current,
-              [layerKey]:
-                true,
-            })
-          )
-        }
-
-        setSelectedFeature(
-          selection
-        )
-
-        setInspectorCollapsed(
-          false
-        )
-
-        if (
-          selection.focusMap &&
-          selection.feature
-        ) {
-          setFocusRequest(
-            (
-              currentRequest
-            ) => ({
-              type: 'feature',
-
-              feature:
-                selection.feature,
-
-              sequence:
-                (currentRequest
-                  ?.sequence ??
-                  0) + 1,
-            })
-          )
-        }
       },
       []
     )
@@ -478,12 +383,6 @@ function App() {
             cycleways
           }
           grid={grid}
-          busRecommendations={
-            busRecommendations
-          }
-          bikeRecommendations={
-            bikeRecommendations
-          }
           selectedMetric={
             selectedMetric
           }
@@ -517,21 +416,6 @@ function App() {
       <SummaryPanel
         summary={
           summary
-        }
-      />
-
-      <PriorityRanking
-        busRecommendations={
-          busRecommendations
-        }
-        bikeRecommendations={
-          bikeRecommendations
-        }
-        selectedFeature={
-          selectedFeature
-        }
-        onSelect={
-          handleRankingSelect
         }
       />
 

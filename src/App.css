@@ -305,7 +305,8 @@ body {
   background: #f59e0b;
 }
 
-.data-mode-api .data-mode-dot {
+.data-mode-api .data-mode-dot,
+.data-mode-baseline .data-mode-dot {
   background: #22c55e;
 }
 

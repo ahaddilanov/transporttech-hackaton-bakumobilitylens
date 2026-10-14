@@ -33,12 +33,12 @@ function AppHeader({
           className={`data-mode-badge ${
             usingApi
               ? 'data-mode-api'
-              : 'data-mode-prototype'
+              : 'data-mode-baseline'
           }`}
           title={
             usingApi
               ? 'Frontend data loaded from the configured API'
-              : 'Frontend is currently using prototype development data'
+              : 'Frontend data loaded from the real backend baseline files'
           }
         >
           <span
@@ -48,7 +48,7 @@ function AppHeader({
 
           {usingApi
             ? 'API data'
-            : 'Prototype data'}
+            : 'Baseline data'}
         </span>
       </div>
 
