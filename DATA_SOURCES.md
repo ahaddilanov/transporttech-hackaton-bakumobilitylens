@@ -4,7 +4,8 @@ Local inspection date: 2026-10-10. This is an audit date, not an acquisition dat
 See [DATA_INVENTORY.md](DATA_INVENTORY.md) for availability and outstanding gaps.
 Evidence comes from existing files, scripts, embedded metadata, the earlier source
 log and the original inventory draft in `~/Downloads`. No data was downloaded for
-this documentation update. Filesystem timestamps are not treated as provenance.
+the original 2026-10-10 documentation update. Later retrievals are documented in
+their own sections below. Filesystem timestamps are not treated as provenance.
 
 ## Baku administrative study boundary
 
@@ -121,3 +122,128 @@ into repository outputs.
 - `bakubus_passenger-2026.csv`: 13,801 rows, 65 distinct route labels, observed dates 2026-01-01 through 2026-08-31. Actual headers: `Tarix (il-ay-gün)`, `Marşrutun adı`, `Gündəlik gediş sayı`. Prior publisher reference: https://opendata.az/en/%40baki-metropoliteni/bakubus-marsrutlari-uzre-gundelik-sernisin-gedislerinin-sayi-2026 . Route/day demand context only; not stop-level boardings or unique riders. Route matching remains unvalidated; not a complete-year file.
 - `passenger-2026.csv`: 6,561 rows, 27 distinct station labels, observed dates 2026-01-01 through 2026-08-31. Actual headers: `Tarix (gün.ay.il)`, `Stansiya`, `Gündəlik gediş sayı`. Prior publisher reference: https://opendata.az/en/%40baki-metropoliteni/stansiyalar-uzre-gundelik-sernisin-gedislerinin-sayi . Station-entry context, not origin–destination trips or exits; not a complete-year file.
 - `pathways.csv`: 98 rows. Actual headers: `Stansiya`, `Station`, `coğrafi enliyi (latitude)`, `coğrafi uzunluğu (longitude)`, `yerləşdiyi ünvan`, `Çıxış nörmələri`. Coordinates are integer-valued in the file (for example `40421499`, `49778066`); the earlier publisher description identifies microdegrees. Prior reference: https://opendata.az/en/%40baki-metropoliteni/metro-cixislari-uzre-koordinatlar . Conversion and spatial validation are still required before using these as metro-exit geometries.
+
+## OSM bicycle-permissible study routing network — Step 16B-1
+
+- Builder: [15_build_bike_network.py](scripts/15_build_bike_network.py), method
+  `baku-bike-study-network-v1.0`; installed OSMnx **2.1.1** inspected before implementation.
+- Source: [OpenStreetMap](https://www.openstreetmap.org/) via the configured Overpass
+  endpoint `https://overpass-api.de/api`. Attribution: **© OpenStreetMap contributors**;
+  database license: [Open Database License (ODbL) 1.0](https://www.openstreetmap.org/copyright).
+- OSM retrieval date: **2026-10-16**; first complete remote acquisition finished
+  at approximately **16:00 UTC**, with Overpass OSM base timestamp
+  **`2026-10-16T15:58:48Z`**. The remote acquisition took **110.703 seconds**,
+  including OSMnx's service-status wait. Final artifact construction reused that
+  complete cached response after a metadata-serialization fix; no replacement
+  query or smaller study area was substituted. Output metadata records the
+  validated build's acquisition start/completion in UTC, OSM base timestamps,
+  cached/fresh response counts and elapsed time. A cache-backed build timestamp
+  is not a fresh remote retrieval or the precise source-edit time.
+- Inputs: all **60** valid AYNA LineStrings in
+  `data/processed/transport/cycleways.geojson`, with observed fields `id`, `name`,
+  `length_m`, `source=AYNA`; and the actual `Baku City` MultiPolygon in
+  `data/processed/boundaries/baku_boundary.geojson`. Both are EPSG:4326.
+- Study definition: project both inputs to **EPSG:32639**, buffer every full line
+  by **3,000 m** (16 segments per quarter circle), dissolve overlapping buffers,
+  then intersect with the full Baku boundary, preserving polygon parts and holes.
+  The inspected study area is **110.244005715 km²**, a valid single Polygon.
+  Disconnected polygons are supported and never reduced to the largest part.
+  The area is the exact geometric intersection; validation tolerates at most
+  0.000001 m² of numerical overlay roundoff without changing the geometry.
+- Query: reproject the study polygon to **EPSG:4326**, then call
+  `graph_from_polygon(..., network_type="bike", simplify=False, retain_all=True,
+  truncate_by_edge=False)`. These parameters follow the
+  [OSMnx 2.1.1 graph API](https://osmnx.readthedocs.io/en/stable/user-reference.html#osmnx.graph.graph_from_polygon).
+  OSMnx downloads with its internal 500 m perimeter buffer, then truncates to
+  study-polygon nodes. Query-envelope and request-count preflight runs locally.
+  The measured buffered convex query envelope is **171.549 km²** and requires
+  **one** response, below OSMnx's default 2,500 km² subdivision threshold.
+- Outputs: `data/processed/networks/baku_bike_study_area.geojson` is a one-feature
+  EPSG:4326 Polygon/MultiPolygon FeatureCollection; `baku_bike.graphml` is a directed
+  MultiDiGraph in **EPSG:32639**. Geographic node `lon`/`lat` are retained alongside
+  metric `x`/`y`. Reusable OSMnx GraphML preserves OSM node IDs and edge topology.
+  Existing driving-network files, processed inputs, scores and Shared Contract V1
+  are not modified; no recommended cycling corridors are produced.
+- Attribute preservation: configure useful OSM way/node tags before acquisition,
+  including `highway`, `bicycle`, `cycleway`, directional/conditional variants,
+  `access`, `oneway`, `bridge`, `tunnel`, `surface`, `smoothness`, `incline`, `lit`,
+  `width`, `junction`, `service`, `maxspeed`, crossing and barrier tags where present.
+  Each edge additionally retains **all original way tags** in `osm_tags_json`,
+  including the original string `oneway`. OSMnx's normalized boolean `oneway`
+  remains available for routing. Missing tags are not assigned invented values.
+  No topological simplification, component pruning or ring removal is applied.
+- Lengths: `length` preserves OSMnx's great-circle distance between adjacent OSM
+  nodes in meters. `length_utm_m` is the corresponding EPSG:32639 segment-geometry
+  length, also in meters. All geometric validation and study measurements are
+  metric. Zero, negative, missing or nonfinite lengths fail; source/metric lengths
+  must agree within 1% or 0.02 m for very short segments. Directed edges count
+  each travel direction separately, so their counts/lengths are not unique roads.
+- Validation: reject malformed/remarked Overpass responses, missing referenced
+  nodes, conflicting duplicated source objects or incomplete response sets.
+  Validate every node's geographic/metric coordinates and study inclusion; every
+  edge's endpoints, geometry, finite positive lengths, normalized direction and
+  raw-tag preservation; and reverse edges for non-oneway segments. Report all
+  weak component sizes, strong-component size frequencies, isolated nodes,
+  highway types, tag coverage and routing warnings. Validate GraphML roundtrip
+  topology and every attribute before publication. The study GeoJSON records the
+  GraphML SHA-256; mismatched or interrupted output pairs fail verification.
+- Offline verification: recompute only the study definition from unchanged local
+  inputs, load both outputs and check geometry, input/output hashes, acquisition
+  provenance and graph quality. It does not query OSM or overwrite files.
+  Existing complete outputs are validated/reused on ordinary reruns.
+- Service-limit fallback: if the buffered query envelope exceeds 2,500 km² or
+  requires more than 16 Overpass responses, stop before acquisition and report
+  reproducible subdivision: a **5,000 m EPSG:32639 lattice anchored at (0,0)**,
+  intersected with the entire study polygon, each nonempty tile queried with
+  **500 m overlap**. Audit every tile, merge raw OSM nodes/ways by source IDs,
+  reconcile duplicate objects, and only publish after every tile succeeds.
+  This fallback is proposed explicitly, not silently executed. Timeouts and
+  service errors never result in a partial graph labeled as complete.
+
+Observed full-graph quality summary (directed edge counts, not unique roads):
+
+| Check | Result |
+| --- | ---: |
+| Nodes / directed edges | 80,957 / 155,944 |
+| GraphML file size | 107,144,495 bytes (about 102.18 MiB) |
+| Final acquisition/build input phase using cached response | 7.422 seconds; 1 cached, 0 fresh responses |
+| Weakly connected components | 103 |
+| Five largest weak component node counts | 79,628; 553; 96; 60; 50 |
+| Remaining 98 weak components | 570 nodes in total |
+| Strongly connected components / largest node count | 793 / 78,582 |
+| Isolated nodes retained after study clipping | 17 |
+| Directed one-way edges | 18,334 |
+| Edges with bicycle/conditional exception tags requiring review | 275 |
+| Invalid coordinates, edge geometries or nonpositive lengths | 0 |
+| Edges extending outside the study polygon | 0 |
+| `highway=cycleway` / `path` / `track` directed edges | 3,892 / 1,978 / 1,480 |
+| `service` / `living_street` / `residential` directed edges | 84,365 / 29,734 / 14,146 |
+
+The complete weak-component size list, strong-component size histogram, all
+highway types and available-tag counts are printed and stored in the study
+GeoJSON. Isolated nodes and small components remain available for inspection;
+they do not imply routable links to the main network. The graph also includes
+OSM-filtered primary, trunk and busway segments: filter inclusion does not verify
+legal access, traffic safety or protected cycling provision on those roads.
+
+**Routing limitations:** bicycle-permissible OSM roads are **not verified safe
+bicycle lanes**. OSM access/condition mapping can be missing or stale, and AYNA
+line labels do not verify operating status or connection to OSM roads. The
+OSMnx 2.1.1 `bike` filter excludes footways, including potentially legal cycling
+links, and filters private/explicitly bicycle-prohibited ways. Its directed
+graph uses general oneway/roundabout rules rather than fully interpreting
+`oneway:bicycle`, contraflow or conditional access. Original exception tags are
+preserved and counted for later assessment; no universal bidirectional assumption
+is introduced. Turn-restriction relations, schedules, barrier passability, grades,
+crossing safety and traffic stress are not modeled. Study-boundary truncation
+can create artificial disconnections; routes leaving the study area are unavailable.
+No disconnected component is silently dropped or bridged. Field/access/safety
+assessment and bicycle-specific routing rules are required before corridor design.
+
+Execution and offline verification from the repository root:
+
+```bash
+.venv/bin/python scripts/15_build_bike_network.py
+.venv/bin/python scripts/15_build_bike_network.py --verify-only
+.venv/bin/python -m unittest discover -s tests -v
+```
