@@ -1,0 +1,37 @@
+{
+  "model_version": "baku-priority-v1.0",
+  "population_saturation_per_250m_cell": 400.0,
+  "poi_weights": {
+    "SCHOOL": 2.0,
+    "HOSPITAL": 2.0,
+    "KINDERGARTEN": 1.0,
+    "PHARMACY": 0.5
+  },
+  "poi_saturation_weighted_count": 6.0,
+  "demand_weights": {
+    "population": 0.70,
+    "essential_destinations": 0.30
+  },
+  "bus": {
+    "good_distance_m": 250.0,
+    "severe_distance_m": 1000.0,
+    "distance_weight": 0.85,
+    "stop_scarcity_weight": 0.15,
+    "sufficient_stops_500m": 2
+  },
+  "bike": {
+    "good_distance_m": 250.0,
+    "severe_distance_m": 3000.0
+  },
+  "metro": {
+    "good_distance_m": 500.0,
+    "severe_distance_m": 3000.0
+  },
+  "mobility_gap_weights": {
+    "bus": 0.50,
+    "bike": 0.30,
+    "metro": 0.20
+  },
+  "high_priority_reporting_threshold": 60.0,
+  "poor_population_coverage_below": 0.5
+}
