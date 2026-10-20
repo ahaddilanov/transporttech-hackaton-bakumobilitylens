@@ -1,28 +1,9 @@
+import { showValue, PRIORITY_EXPLANATION } from '../utils/presentation'
 import {
   useMemo,
   useState,
 } from 'react'
 import './PriorityRanking.css'
-
-function showValue(
-  value,
-  suffix = ''
-) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return 'Unavailable'
-  }
-
-  if (
-    typeof value === 'number'
-  ) {
-    return `${value.toLocaleString()}${suffix}`
-  }
-
-  return `${value}${suffix}`
-}
 
 function getPriorityLabel(score) {
   if (
@@ -73,6 +54,7 @@ function getPriorityClass(score) {
 function PriorityRanking({
   busRecommendations,
   bikeRecommendations,
+  labels,
   selectedFeature,
   onSelect,
 }) {
@@ -175,6 +157,7 @@ function PriorityRanking({
       <button
         type="button"
         className="ranking-collapsed"
+        id="intervention-priorities"
         onClick={() =>
           setCollapsed(false)
         }
@@ -205,7 +188,7 @@ function PriorityRanking({
   }
 
   return (
-    <aside className="priority-ranking">
+    <aside className="priority-ranking" id="intervention-priorities" tabIndex={-1}>
       <div className="ranking-header">
         <div>
           <p className="ranking-eyebrow">
@@ -217,8 +200,7 @@ function PriorityRanking({
           </h2>
 
           <p className="ranking-description">
-            Ranked by backend
-            intervention priority.
+            Ranked by intervention need. {PRIORITY_EXPLANATION}
           </p>
         </div>
 
@@ -236,7 +218,7 @@ function PriorityRanking({
 
       <div
         className="ranking-tabs"
-        role="tablist"
+        role="group"
         aria-label="Recommendation type"
       >
         <button
@@ -246,6 +228,7 @@ function PriorityRanking({
               ? 'active'
               : ''
           }
+          aria-pressed={activeType === 'bus'}
           onClick={() =>
             handleTypeChange(
               'bus'
@@ -265,6 +248,7 @@ function PriorityRanking({
               ? 'active'
               : ''
           }
+          aria-pressed={activeType === 'bike'}
           onClick={() =>
             handleTypeChange(
               'bike'
@@ -340,7 +324,7 @@ function PriorityRanking({
                   >
                     <div className="ranking-card-top">
                       <span className="ranking-position">
-                        #
+                        Rank{' '}
                         {index +
                           1}
                       </span>
@@ -359,23 +343,14 @@ function PriorityRanking({
                     <div className="ranking-card-heading">
                       <div>
                         <strong>
-                          {activeType ===
-                          'bus'
-                            ? 'Candidate Bus Improvement'
-                            : 'Candidate Bicycle Corridor'}
+                          {labels.get(properties.id) ?? 'Candidate intervention'}
                         </strong>
-
-                        <span>
-                          {
-                            properties.id
-                          }
-                        </span>
+                        <span>Full ID available in the inspector</span>
                       </div>
 
                       <div className="ranking-score">
                         <strong>
-                          {priority ??
-                            '—'}
+                          {priority == null ? '—' : showValue(priority)}
                         </strong>
 
                         <span>
@@ -403,7 +378,7 @@ function PriorityRanking({
                       <div className="ranking-metrics">
                         <div>
                           <span>
-                            Population
+                            Newly covered population
                           </span>
 
                           <strong>

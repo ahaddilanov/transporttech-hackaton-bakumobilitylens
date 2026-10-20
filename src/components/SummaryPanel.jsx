@@ -1,17 +1,6 @@
+import { showValue as showNumber } from '../utils/presentation'
 import { useState } from 'react'
 import './SummaryPanel.css'
-
-function showNumber(value) {
-  if (value === null || value === undefined) {
-    return 'Unavailable'
-  }
-
-  if (typeof value === 'number') {
-    return value.toLocaleString()
-  }
-
-  return value
-}
 
 function formatGeneratedAt(value) {
   if (!value) {

@@ -1,15 +1,11 @@
+import GridLayer from './GridLayer'
+import { showValue, showScore } from '../utils/presentation'
 import { memo } from 'react'
 import L from 'leaflet'
 import {
   GeoJSON,
   Pane,
 } from 'react-leaflet'
-
-const METRIC_LABELS = {
-  mobility_gap: 'Mobility gap',
-  bus_priority: 'Bus priority',
-  bike_priority: 'Bike priority',
-}
 
 const ANALYSIS_PANE_STYLE = {
   zIndex: 250,
@@ -25,60 +21,6 @@ const EXISTING_POINTS_PANE_STYLE = {
 
 const RECOMMENDATIONS_PANE_STYLE = {
   zIndex: 370,
-}
-
-function getPriorityColor(score) {
-  if (
-    score === null ||
-    score === undefined
-  ) {
-    return '#9ca3af'
-  }
-
-  if (score >= 75) {
-    return '#dc2626'
-  }
-
-  if (score >= 50) {
-    return '#f97316'
-  }
-
-  if (score >= 25) {
-    return '#eab308'
-  }
-
-  return '#22c55e'
-}
-
-function showValue(
-  value,
-  suffix = ''
-) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return 'Unavailable'
-  }
-
-  if (
-    typeof value === 'number'
-  ) {
-    return `${value.toLocaleString()}${suffix}`
-  }
-
-  return `${value}${suffix}`
-}
-
-function showScore(value) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return 'Unavailable'
-  }
-
-  return `${value}/100`
 }
 
 function createTooltipContent(
@@ -219,17 +161,16 @@ function makeKeyboardAccessible(
   )
 }
 
-function MapLayers({
+const TransportLayers = memo(function TransportLayers({
   busStops,
   busRoutes,
   metroStations,
   cycleways,
-  grid,
   busRecommendations,
   bikeRecommendations,
-  selectedMetric,
   visibility,
   onSelect,
+  labels,
 }) {
   const adaptiveLineClass =
     visibility.grid
@@ -255,130 +196,6 @@ function MapLayers({
 
   return (
     <>
-      {/* ================================================== */}
-      {/* Analysis grid                                      */}
-      {/* ================================================== */}
-
-      <Pane
-        name="analysis-grid-pane"
-        style={
-          ANALYSIS_PANE_STYLE
-        }
-      >
-        {visibility.grid &&
-          grid && (
-            <GeoJSON
-              key={
-                selectedMetric
-              }
-              data={grid}
-              style={(
-                feature
-              ) => ({
-                color:
-                  '#475569',
-                weight: 0.8,
-                opacity: 0.62,
-                fillColor:
-                  getPriorityColor(
-                    feature
-                      .properties[
-                      selectedMetric
-                    ]
-                  ),
-                fillOpacity: 0.42,
-              })}
-              onEachFeature={(
-                feature,
-                layer
-              ) => {
-                const properties =
-                  feature.properties
-
-                const activate =
-                  () => {
-                    selectFeature(
-                      'Grid cell',
-                      feature
-                    )
-                  }
-
-                bindTooltip(
-                  layer,
-                  'Analysis cell',
-                  [
-                    `ID: ${
-                      properties.id
-                    }`,
-                    `${
-                      METRIC_LABELS[
-                        selectedMetric
-                      ]
-                    }: ${showScore(
-                      properties[
-                        selectedMetric
-                      ]
-                    )}`,
-                  ]
-                )
-
-                makeKeyboardAccessible(
-                  layer,
-                  `Analysis cell ${
-                    properties.id
-                  }. ${
-                    METRIC_LABELS[
-                      selectedMetric
-                    ]
-                  }: ${showScore(
-                    properties[
-                      selectedMetric
-                    ]
-                  )}`,
-                  activate
-                )
-
-                layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 1.4,
-                      opacity: 0.82,
-                      fillOpacity:
-                        0.47,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#475569',
-                      weight: 0.8,
-                      opacity: 0.62,
-                      fillColor:
-                        getPriorityColor(
-                          properties[
-                            selectedMetric
-                          ]
-                        ),
-                      fillOpacity:
-                        0.42,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'click',
-                  activate
-                )
-              }}
-            />
-          )}
-      </Pane>
-
       {/* ================================================== */}
       {/* Existing network lines                             */}
       {/* ================================================== */}
@@ -789,7 +606,7 @@ function MapLayers({
 
                 bindTooltip(
                   layer,
-                  'Candidate Bus Improvement',
+                  labels.get(properties.id) ?? 'Candidate Bus Stop',
                   [
                     `Priority: ${showScore(
                       properties.priority
@@ -802,9 +619,7 @@ function MapLayers({
 
                 makeKeyboardAccessible(
                   layer,
-                  `Candidate Bus Improvement ${
-                    properties.id
-                  }. Priority ${showScore(
+                  `${labels.get(properties.id) ?? 'Candidate Bus Stop'}. Priority ${showScore(
                     properties.priority
                   )}`,
                   activate
@@ -871,7 +686,7 @@ function MapLayers({
 
                 bindTooltip(
                   layer,
-                  'Candidate Bicycle Corridor',
+                  labels.get(properties.id) ?? 'Bicycle Corridor',
                   [
                     `Priority: ${showScore(
                       properties.priority
@@ -886,9 +701,7 @@ function MapLayers({
 
                 makeKeyboardAccessible(
                   layer,
-                  `Candidate Bicycle Corridor ${
-                    properties.id
-                  }. Priority ${showScore(
+                  `${labels.get(properties.id) ?? 'Bicycle Corridor'}. Priority ${showScore(
                     properties.priority
                   )}. Further engineering assessment.`,
                   activate
@@ -926,6 +739,18 @@ function MapLayers({
             />
           )}
       </Pane>
+    </>
+  )
+})
+
+function MapLayers({ grid, selectedMetric, ...transportProps }) {
+  return (
+    <>
+      <Pane name="analysis-grid-pane" style={ANALYSIS_PANE_STYLE}>
+        <GridLayer data={grid} selectedMetric={selectedMetric}
+          visible={transportProps.visibility.grid} onSelect={transportProps.onSelect} />
+      </Pane>
+      <TransportLayers {...transportProps} />
     </>
   )
 }

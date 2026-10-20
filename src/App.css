@@ -764,3 +764,93 @@ button:focus-visible {
       1 !important;
   }
 }
+/* Readable map controls and bounded, independently scrolling desktop panels. */
+.app .feature-panel, .app .priority-ranking { width: 340px; }
+.app .analysis-panel { max-height: min(620px, calc(100dvh - 190px)); }
+.app .feature-panel, .app .priority-ranking { max-height: calc(100dvh - 170px); }
+.app .feature-panel { right: 16px; }
+.app .priority-ranking { left: 62px; }
+.app .feature-panel-close, .app .ranking-collapse-button,
+.app .analysis-collapse-button, .app .layer-panel-collapse,
+.app .summary-collapse-button { min-width: 36px; min-height: 36px; }
+.app .ranking-tabs button, .app .analysis-tabs button { min-height: 40px; }
+.app .transport-tooltip-content strong { font-size: 14px; }
+.app .transport-tooltip-content span { font-size: 13px; line-height: 1.5; }
+.app .brand-copy span, .app .header-context, .app .data-mode-badge { font-size: 12px; }
+.app .theme-toggle, .app .focus-mode-toggle, .app .overview-view-button { font-size: 13px; min-height: 38px; }
+input:focus-visible, summary:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+
+/* Small screens keep the map and every panel reachable without overlapping cards. */
+@media (max-width: 1100px) {
+  body { overflow: auto; }
+  .app {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+  .app .app-header {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+  .app .header-actions { flex-wrap: wrap; }
+  .app .map {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 55dvh;
+    min-height: 320px;
+    flex-shrink: 0;
+    border-radius: 12px;
+  }
+  .app .leaflet-top { top: 0; }
+  .app .summary-panel, .app .summary-collapsed,
+  .app .priority-ranking, .app .ranking-collapsed,
+  .app .feature-panel, .app .inspector-collapsed,
+  .app .analysis-panel, .app .analysis-collapsed,
+  .app .layer-panel, .app .layers-collapsed,
+  .app .data-status-stack {
+    position: static;
+    inset: auto;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    max-height: none;
+    transform: none;
+    overflow: visible;
+  }
+  .app .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app .summary-footer { flex-wrap: wrap; gap: 8px; }
+  .app .ranking-collapsed, .app .inspector-collapsed,
+  .app .analysis-collapsed, .app .layers-collapsed { min-height: 52px; }
+}
+
+@media (min-width: 1101px) {
+  .app:has(.priority-ranking) .analysis-panel,
+  .app .priority-ranking { max-height: calc(50dvh - 100px); }
+  .app:has(.layer-panel) .feature-panel,
+  .app .layer-panel { max-height: calc(50dvh - 100px); }
+  .app .summary-panel { width: min(620px, calc(100vw - 860px)); min-width: 0; }
+  .app .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  z-index: 2000;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--surface-solid);
+  color: var(--text-primary);
+  font-size: 16px;
+}
+.skip-link:focus { top: 12px; }

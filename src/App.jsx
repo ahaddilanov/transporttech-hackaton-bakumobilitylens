@@ -1,5 +1,7 @@
+import { recommendationLabels } from './utils/presentation'
 import {
   useCallback,
+  useMemo,
   useEffect,
   useState,
 } from 'react'
@@ -96,6 +98,8 @@ function App() {
     bikeRecommendations,
     setBikeRecommendations,
   ] = useState(null)
+
+  const labels = useMemo(() => recommendationLabels(busRecommendations, bikeRecommendations), [busRecommendations, bikeRecommendations])
 
   const [summary, setSummary] =
     useState(null)
@@ -432,6 +436,8 @@ function App() {
         focusMode
       }
     >
+      <a className="skip-link" href="#analysis-controls">Skip map to analysis controls</a>
+      <a className="skip-link" href="#intervention-priorities">Skip map to recommendations</a>
       <AppHeader
         theme={theme}
         onToggleTheme={
@@ -465,6 +471,7 @@ function App() {
         />
 
         <MapLayers
+          labels={labels}
           busStops={
             busStops
           }
@@ -521,6 +528,7 @@ function App() {
       />
 
       <PriorityRanking
+        labels={labels}
         busRecommendations={
           busRecommendations
         }
@@ -536,6 +544,7 @@ function App() {
       />
 
       <DetailsPanel
+        labels={labels}
         selectedFeature={
           selectedFeature
         }
@@ -555,6 +564,8 @@ function App() {
       />
 
       <AnalysisPanel
+        grid={grid}
+        onSelect={handleRankingSelect}
         selectedMetric={
           selectedMetric
         }

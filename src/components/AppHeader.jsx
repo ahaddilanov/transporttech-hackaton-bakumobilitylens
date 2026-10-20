@@ -38,7 +38,7 @@ function AppHeader({
           title={
             usingApi
               ? 'Frontend data loaded from the configured API'
-              : 'Frontend is currently using prototype development data'
+              : 'Frontend data loaded from local static files'
           }
         >
           <span
@@ -48,7 +48,7 @@ function AppHeader({
 
           {usingApi
             ? 'API data'
-            : 'Prototype data'}
+            : 'Static data'}
         </span>
       </div>
 

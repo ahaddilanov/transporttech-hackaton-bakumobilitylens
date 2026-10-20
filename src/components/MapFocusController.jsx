@@ -55,9 +55,10 @@ function MapFocusController({ focusRequest }) {
       return
     }
 
+    const compact = map.getSize().x <= 1100
     map.flyToBounds(bounds, {
-      paddingTopLeft: [360, 110],
-      paddingBottomRight: [360, 90],
+      paddingTopLeft: compact ? [24, 24] : [360, 110],
+      paddingBottomRight: compact ? [24, 24] : [360, 90],
       maxZoom: 15,
       animate: true,
       duration: 0.7,
