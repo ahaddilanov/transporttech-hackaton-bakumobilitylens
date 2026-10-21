@@ -40,6 +40,6 @@ Optional browser smoke test, using the isolated Chrome setup in
 APP_URL=http://127.0.0.1:5174/ node tests/demo-browser-check.mjs
 ```
 
-The original fixtures follow the project's pending code-licensing decision;
-they are not a license grant for real provider data. See the root README and
-RELEASE_READINESS.md before publication.
+The original hand-authored fixtures are covered by the project's [MIT License](../LICENSE).
+This does not grant rights to real provider data or relicense OpenStreetMap
+background tiles. See the root README and RELEASE_READINESS.md before publication.

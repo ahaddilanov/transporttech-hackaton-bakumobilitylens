@@ -10,10 +10,7 @@ Baku Mobility Lens was developed by:
 Integration and testing were collaborative. These roles describe contributions;
 they do not replace Git history or alter commit authorship.
 
-No project code license has yet been adopted. MIT is recommended as a simple
-permissive license for original source code, subject to approval by both
-contributors and confirmation of ownership. See the
-[OSI MIT license reference](https://opensource.org/license/mit). No LICENSE file
-has been created. Third-party libraries and data retain their separate terms;
-a future code license must not be presented as permission to redistribute
-AYNA-attributed geometry or other provider data.
+Both contributors explicitly approved the [MIT License](LICENSE) for their
+original source code. Copyright (c) 2026 osmanveyisli and ahaddilanov.
+Third-party libraries and datasets retain their separate terms. This approval
+does not grant redistribution rights for AYNA-attributed or other provider data.
