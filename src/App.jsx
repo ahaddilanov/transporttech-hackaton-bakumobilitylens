@@ -1,3 +1,4 @@
+import { createScenarioIndex, findScenario } from './data/scenarios'
 import { recommendationLabels } from './utils/presentation'
 import {
   useCallback,
@@ -43,6 +44,7 @@ import {
   validateGrid,
   validateMetroStations,
   validateSummary,
+  validateInterventionScenarios,
 } from './data/validateData'
 
 import {
@@ -100,6 +102,9 @@ function App() {
   ] = useState(null)
 
   const labels = useMemo(() => recommendationLabels(busRecommendations, bikeRecommendations), [busRecommendations, bikeRecommendations])
+
+  const [scenarioData, setScenarioData] = useState(null)
+  const scenarioIndex = useMemo(() => createScenarioIndex(scenarioData), [scenarioData])
 
   const [summary, setSummary] =
     useState(null)
@@ -259,6 +264,14 @@ function App() {
             .bikeRecommendations,
           validateBikeRecommendations,
           setBikeRecommendations
+        ),
+
+        loadDataset(
+          'Accessibility scenarios',
+          loadJson,
+          DATA_SOURCES.interventionScenarios,
+          validateInterventionScenarios,
+          setScenarioData
         ),
 
         loadDataset(
@@ -545,6 +558,8 @@ function App() {
 
       <DetailsPanel
         labels={labels}
+        scenario={findScenario(scenarioIndex, selectedFeature)}
+        scenarioStatus={scenarioData ? 'ready' : loading ? 'loading' : 'unavailable'}
         selectedFeature={
           selectedFeature
         }

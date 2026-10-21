@@ -1,3 +1,4 @@
+import BeforeAfterComparison from './BeforeAfterComparison'
 import FeatureIdentifier from './FeatureIdentifier'
 import { showValue, PRIORITY_EXPLANATION, readableReason } from '../utils/presentation'
 import './DetailsPanel.css'
@@ -176,6 +177,8 @@ function FeatureTypeBadge({ type }) {
 function DetailsPanel({
   labels,
   selectedFeature,
+  scenario,
+  scenarioStatus,
   collapsed,
   onCollapse,
   onOpen,
@@ -327,6 +330,10 @@ function DetailsPanel({
           />
         )}
       </section>
+
+      {(type === 'Bus recommendation' || type === 'Bike recommendation') && (
+        <BeforeAfterComparison key={properties.id} scenario={scenario} status={scenarioStatus} />
+      )}
 
       {type === 'Bus route' && (
         <section className="feature-section">

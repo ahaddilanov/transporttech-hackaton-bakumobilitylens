@@ -43,3 +43,16 @@ export function recommendationLabels(bus, bike) {
 }
 
 export const PRIORITY_EXPLANATION = '100/100 indicates the highest modeled intervention need, not certainty, safety or approval.'
+
+const percentage = new Intl.NumberFormat('en', { minimumFractionDigits: 1, maximumFractionDigits: 2 })
+
+export function showPercentage(value) {
+  return Number.isFinite(value) ? `${percentage.format(value)}%` : 'Unavailable'
+}
+
+export function showPercentagePoints(value) {
+  if (!Number.isFinite(value)) return 'Unavailable'
+  const sign = value > 0 ? '+' : value < 0 ? '−' : ''
+  if (value !== 0 && Math.abs(value) < 0.01) return `${sign}<0.01 pp`
+  return `${sign}${percentage.format(Math.abs(value))} pp`
+}

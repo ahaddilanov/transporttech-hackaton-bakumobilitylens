@@ -71,7 +71,7 @@ Settling time includes wheel debounce, Leaflet's existing zoom animation, protoc
 - Click hit testing is linear over the viewport working set. Pointer movement, dragging and non-inspection pointer events do not run that scan. Large overview extents can still include most or all cells.
 - Canvas still paints many visible polygons after movement and zoom. Existing animations remain enabled. Real-device touch performance, GPU frame rates and live tile loading were not benchmarked.
 - The scoped renderer uses Leaflet 1.9.4 internal lifecycle methods. Leaflet upgrades require rerunning the real-data browser regression and zoom comparison. No global Leaflet prototype is changed by application code; temporary profiling wrappers exist only in the browser test scripts.
-- No source GeoJSON, score/color threshold, calculation, Shared Contract V1 field or simulation result changes. No additional route simplification or simulation UI is implemented. Existing development tabs should be reloaded after the update to replace any old Leaflet instances retained by hot reload.
+- No source GeoJSON, score/color threshold, calculation, Shared Contract V1 field or simulation result changes. No additional route simplification is implemented. The saved scenario comparison added later is documented in FRONTEND_SIMULATIONS.md. Existing development tabs should be reloaded after the update to replace any old Leaflet instances retained by hot reload.
 
 ## Verification
 

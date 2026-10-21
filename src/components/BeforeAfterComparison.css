@@ -1,0 +1,31 @@
+.simulation-comparison {
+  margin-block: 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--text-primary);
+}
+.simulation-comparison > summary {
+  padding-block: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+.simulation-metrics { margin: 12px 0; }
+.simulation-metrics > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(70px, auto);
+  align-items: baseline;
+  gap: 12px;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.simulation-metrics dt { color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+.simulation-metrics dd { margin: 0; text-align: right; font-size: 15px; font-weight: 750; overflow-wrap: anywhere; }
+.simulation-note { color: var(--text-secondary); font-size: 13px; line-height: 1.6; margin-block: 12px; overflow-wrap: anywhere; }
+.simulation-baseline { border-left: 3px solid var(--text-muted); padding-left: 12px; }
+.simulation-reconciliation { margin-block: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+.simulation-reconciliation h3 { margin: 0; font-size: 14px; line-height: 1.5; }
+.simulation-method-note summary { cursor: pointer; font-size: 13px; padding-block: 8px; }

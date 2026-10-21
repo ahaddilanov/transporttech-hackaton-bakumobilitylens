@@ -11,9 +11,12 @@ const STATIC_SOURCES = {
   busRecommendations: '/data/bus_recommendations.geojson',
   bikeRecommendations: '/data/bike_recommendations.geojson',
   summary: '/data/summary.json',
+  interventionScenarios: '/data/intervention_scenarios.json',
 }
 
 const API_SOURCES = {
+  // Saved simulations remain a static snapshot; no API endpoint is assumed.
+  interventionScenarios: STATIC_SOURCES.interventionScenarios,
   busStops: `${API_BASE_URL}/api/v1/bus-stops`,
   busRoutes: `${API_BASE_URL}/api/v1/bus-routes`,
   metroStations: `${API_BASE_URL}/api/v1/metro-stations`,
