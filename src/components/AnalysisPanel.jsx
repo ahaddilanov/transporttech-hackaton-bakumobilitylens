@@ -1,3 +1,5 @@
+import GridBrowser from './GridBrowser'
+import { PRIORITY_EXPLANATION } from '../utils/presentation'
 import { useState } from 'react'
 import './AnalysisPanel.css'
 
@@ -57,6 +59,8 @@ const SCALE_ITEMS = [
 ]
 
 function AnalysisPanel({
+  grid,
+  onSelect,
   selectedMetric,
   onChange,
 }) {
@@ -72,6 +76,7 @@ function AnalysisPanel({
       <button
         type="button"
         className="analysis-collapsed"
+        id="analysis-controls"
         onClick={() =>
           setCollapsed(false)
         }
@@ -100,7 +105,7 @@ function AnalysisPanel({
   }
 
   return (
-    <aside className="analysis-panel">
+    <aside className="analysis-panel" id="analysis-controls" tabIndex={-1}>
       <div className="analysis-header">
         <div>
           <p className="analysis-eyebrow">
@@ -130,7 +135,7 @@ function AnalysisPanel({
 
       <div
         className="analysis-tabs"
-        role="tablist"
+        role="group"
         aria-label="Analysis metric"
       >
         {METRIC_ORDER.map(
@@ -146,8 +151,7 @@ function AnalysisPanel({
               <button
                 key={metricKey}
                 type="button"
-                role="tab"
-                aria-selected={active}
+                aria-pressed={active}
                 className={
                   active
                     ? 'active'
@@ -267,11 +271,10 @@ function AnalysisPanel({
             Higher score = greater
             intervention need.
           </strong>{' '}
-          Scores are analytical priorities,
-          not measures of infrastructure
-          quality.
+          {PRIORITY_EXPLANATION}
         </p>
       </div>
+      <GridBrowser grid={grid} selectedMetric={selectedMetric} onSelect={onSelect} />
     </aside>
   )
 }

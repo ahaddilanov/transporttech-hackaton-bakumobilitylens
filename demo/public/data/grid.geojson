@@ -1,0 +1,192 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "synthetic": true,
+    "source": "Original hand-authored Baku Mobility Lens UI fixture",
+    "limitations": [
+      "Made-up coordinates and values; not real infrastructure, residents, routing or analysis results."
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "synthetic:grid:1",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              49.85,
+              40.41
+            ],
+            [
+              49.857,
+              40.41
+            ],
+            [
+              49.857,
+              40.415
+            ],
+            [
+              49.85,
+              40.415
+            ],
+            [
+              49.85,
+              40.41
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "synthetic:grid:1",
+        "population": 100,
+        "nearest_bus_stop_m": 800,
+        "nearest_metro_m": 1500,
+        "nearest_cycleway_m": 900,
+        "bus_stops_500m": 0,
+        "bus_routes_nearby": 1,
+        "pois_nearby": 0,
+        "bus_priority": 80,
+        "bike_priority": 70,
+        "mobility_gap": 75,
+        "source": "Synthetic example"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic:grid:2",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              49.858000000000004,
+              40.41
+            ],
+            [
+              49.865,
+              40.41
+            ],
+            [
+              49.865,
+              40.415
+            ],
+            [
+              49.858000000000004,
+              40.415
+            ],
+            [
+              49.858000000000004,
+              40.41
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "synthetic:grid:2",
+        "population": 200,
+        "nearest_bus_stop_m": 200,
+        "nearest_metro_m": 1500,
+        "nearest_cycleway_m": 800,
+        "bus_stops_500m": 1,
+        "bus_routes_nearby": 1,
+        "pois_nearby": 0,
+        "bus_priority": 65,
+        "bike_priority": 90,
+        "mobility_gap": 80,
+        "source": "Synthetic example"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic:grid:3",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              49.85,
+              40.416
+            ],
+            [
+              49.857,
+              40.416
+            ],
+            [
+              49.857,
+              40.421
+            ],
+            [
+              49.85,
+              40.421
+            ],
+            [
+              49.85,
+              40.416
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "synthetic:grid:3",
+        "population": 0,
+        "nearest_bus_stop_m": 1200,
+        "nearest_metro_m": 1500,
+        "nearest_cycleway_m": 0,
+        "bus_stops_500m": 0,
+        "bus_routes_nearby": 1,
+        "pois_nearby": 0,
+        "bus_priority": 0,
+        "bike_priority": 0,
+        "mobility_gap": 0,
+        "source": "Synthetic example"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic:grid:4",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              49.858000000000004,
+              40.416
+            ],
+            [
+              49.865,
+              40.416
+            ],
+            [
+              49.865,
+              40.421
+            ],
+            [
+              49.858000000000004,
+              40.421
+            ],
+            [
+              49.858000000000004,
+              40.416
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "synthetic:grid:4",
+        "population": null,
+        "nearest_bus_stop_m": 900,
+        "nearest_metro_m": 1500,
+        "nearest_cycleway_m": 650,
+        "bus_stops_500m": 0,
+        "bus_routes_nearby": 1,
+        "pois_nearby": 0,
+        "bus_priority": null,
+        "bike_priority": null,
+        "mobility_gap": null,
+        "source": "Synthetic example"
+      }
+    }
+  ]
+}

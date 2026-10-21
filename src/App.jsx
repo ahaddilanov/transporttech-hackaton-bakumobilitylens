@@ -1,5 +1,8 @@
+import { createScenarioIndex, findScenario } from './data/scenarios'
+import { recommendationLabels } from './utils/presentation'
 import {
   useCallback,
+  useMemo,
   useEffect,
   useState,
 } from 'react'
@@ -41,6 +44,7 @@ import {
   validateGrid,
   validateMetroStations,
   validateSummary,
+  validateInterventionScenarios,
 } from './data/validateData'
 
 import {
@@ -96,6 +100,11 @@ function App() {
     bikeRecommendations,
     setBikeRecommendations,
   ] = useState(null)
+
+  const labels = useMemo(() => recommendationLabels(busRecommendations, bikeRecommendations), [busRecommendations, bikeRecommendations])
+
+  const [scenarioData, setScenarioData] = useState(null)
+  const scenarioIndex = useMemo(() => createScenarioIndex(scenarioData), [scenarioData])
 
   const [summary, setSummary] =
     useState(null)
@@ -255,6 +264,14 @@ function App() {
             .bikeRecommendations,
           validateBikeRecommendations,
           setBikeRecommendations
+        ),
+
+        loadDataset(
+          'Accessibility scenarios',
+          loadJson,
+          DATA_SOURCES.interventionScenarios,
+          validateInterventionScenarios,
+          setScenarioData
         ),
 
         loadDataset(
@@ -432,6 +449,8 @@ function App() {
         focusMode
       }
     >
+      <a className="skip-link" href="#analysis-controls">Skip map to analysis controls</a>
+      <a className="skip-link" href="#intervention-priorities">Skip map to recommendations</a>
       <AppHeader
         theme={theme}
         onToggleTheme={
@@ -460,11 +479,12 @@ function App() {
         className="map"
       >
         <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
         <MapLayers
+          labels={labels}
           busStops={
             busStops
           }
@@ -521,6 +541,7 @@ function App() {
       />
 
       <PriorityRanking
+        labels={labels}
         busRecommendations={
           busRecommendations
         }
@@ -536,6 +557,9 @@ function App() {
       />
 
       <DetailsPanel
+        labels={labels}
+        scenario={findScenario(scenarioIndex, selectedFeature)}
+        scenarioStatus={scenarioData ? 'ready' : loading ? 'loading' : 'unavailable'}
         selectedFeature={
           selectedFeature
         }
@@ -555,6 +579,8 @@ function App() {
       />
 
       <AnalysisPanel
+        grid={grid}
+        onSelect={handleRankingSelect}
         selectedMetric={
           selectedMetric
         }

@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "synthetic": true,
+    "source": "Original hand-authored Baku Mobility Lens UI fixture",
+    "limitations": [
+      "Made-up coordinates and values; not real infrastructure, residents, routing or analysis results."
+    ],
+    "coverage_radius_m": 500
+  },
+  "summary": {
+    "synthetic": true,
+    "total_scenarios": 2
+  },
+  "scenarios": [
+    {
+      "intervention_id": "synthetic:bus:1",
+      "intervention_type": "bus_stop",
+      "population_improved": 300,
+      "coverage_before_pct": 66.66666666666667,
+      "coverage_after_pct": 100,
+      "coverage_change_pp": 33.33333333333333,
+      "avg_access_improvement_m": 250,
+      "affected_cells": 2,
+      "newly_covered_population": 100,
+      "newly_covered_cells": 1,
+      "unknown_population_cells_affected": 1,
+      "model_version": "synthetic-ui-example-v1",
+      "coverage_radius_m": 500,
+      "reconciliation": {
+        "status": "match",
+        "recommendation_value": 100,
+        "simulation_value": 100,
+        "difference_population": 0
+      }
+    },
+    {
+      "intervention_id": "synthetic:bike:1",
+      "intervention_type": "bike_corridor",
+      "population_improved": 300,
+      "coverage_before_pct": 0,
+      "coverage_after_pct": 66.66666666666667,
+      "coverage_change_pp": 66.66666666666667,
+      "avg_access_improvement_m": 400,
+      "affected_cells": 2,
+      "newly_covered_population": 200,
+      "newly_covered_cells": 1,
+      "unknown_population_cells_affected": 1,
+      "model_version": "synthetic-ui-example-v1",
+      "coverage_radius_m": 500,
+      "reconciliation": {
+        "status": "match",
+        "recommendation_value": 200,
+        "simulation_value": 200,
+        "difference_population": 0
+      }
+    }
+  ]
+}

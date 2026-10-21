@@ -1,16 +1,7 @@
+import BeforeAfterComparison from './BeforeAfterComparison'
+import FeatureIdentifier from './FeatureIdentifier'
+import { showValue, PRIORITY_EXPLANATION, readableReason } from '../utils/presentation'
 import './DetailsPanel.css'
-
-function showValue(value, suffix = '') {
-  if (value === null || value === undefined) {
-    return 'Unavailable'
-  }
-
-  if (typeof value === 'number') {
-    return `${value.toLocaleString()}${suffix}`
-  }
-
-  return `${value}${suffix}`
-}
 
 function getPriorityLabel(score) {
   if (score === null || score === undefined) {
@@ -86,7 +77,7 @@ function PriorityMeter({
 
         <strong>
           {hasScore
-            ? `${score}/100`
+            ? `${showValue(score)}/100`
             : 'Unavailable'}
         </strong>
       </div>
@@ -136,7 +127,7 @@ function ReasonList({ reasons }) {
             </span>
 
             <span>
-              {reason}
+              {readableReason(reason)}
             </span>
           </li>
         )
@@ -184,7 +175,10 @@ function FeatureTypeBadge({ type }) {
 }
 
 function DetailsPanel({
+  labels,
   selectedFeature,
+  scenario,
+  scenarioStatus,
   collapsed,
   onCollapse,
   onOpen,
@@ -285,7 +279,7 @@ function DetailsPanel({
   const title = hasName
     ? properties.name ??
       'Unnamed feature'
-    : properties.id
+    : labels.get(properties.id) ?? properties.id
 
   return (
     <aside className="feature-panel">
@@ -316,15 +310,15 @@ function DetailsPanel({
         </button>
       </div>
 
+      {(type === 'Bus recommendation' || type === 'Bike recommendation') && (
+        <p className="feature-context-note">{PRIORITY_EXPLANATION} Benefits are hypothetical straight-line accessibility estimates; population estimates are rounded for display. Individual proposals may benefit the same residents.</p>
+      )}
       <section className="feature-section">
         <p className="feature-section-title">
           Identity
         </p>
 
-        <DetailRow
-          label="ID"
-          value={properties.id}
-        />
+        <FeatureIdentifier key={properties.id} id={properties.id} />
 
         {hasName && (
           <DetailRow
@@ -336,6 +330,10 @@ function DetailsPanel({
           />
         )}
       </section>
+
+      {(type === 'Bus recommendation' || type === 'Bike recommendation') && (
+        <BeforeAfterComparison key={properties.id} scenario={scenario} status={scenarioStatus} />
+      )}
 
       {type === 'Bus route' && (
         <section className="feature-section">
@@ -498,8 +496,7 @@ function DetailsPanel({
             />
 
             <p className="feature-context-note">
-              Higher scores indicate
-              greater intervention need.
+              {PRIORITY_EXPLANATION}
             </p>
           </section>
         </>
@@ -523,14 +520,14 @@ function DetailsPanel({
 
           <section className="feature-section">
             <p className="feature-section-title">
-              Expected impact
+              Modeled accessibility benefit
             </p>
 
             <div className="inspector-stat-grid">
               <div className="inspector-stat">
                 <span>
-                  Population
-                  affected
+                  Newly covered
+                  population
                 </span>
 
                 <strong>
@@ -555,6 +552,7 @@ function DetailsPanel({
               </div>
             </div>
 
+            <p className="feature-context-note">Access distances are population-weighted means for newly covered residents, measured in a straight line.</p>
             <div className="access-comparison">
               <div>
                 <span>

@@ -10,15 +10,32 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-demo/
 *.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
+.vs/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Local environments and generated Python/cache files
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+backend/cache/
+
+# Real local scenarios are not cleared for redistribution.
+# Existing tracked public/data fixtures remain tracked; review explicit staging.
+/public/data/intervention_scenarios.json

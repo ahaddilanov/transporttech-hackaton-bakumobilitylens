@@ -344,3 +344,6 @@ export function validateSummary(data) {
 
   return data
 }
+// Keep scenario validation alongside the existing loading validators, without
+// changing the GeoJSON/Shared Contract V1 validators above.
+export { validateInterventionScenarios } from './validateScenarios.js'

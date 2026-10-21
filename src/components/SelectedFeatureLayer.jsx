@@ -82,6 +82,7 @@ function createOuterPoint(
   return L.circleMarker(
     latlng,
     {
+      pane: 'selection-pane',
       radius: 15,
 
       color: '#ffffff',
@@ -103,6 +104,7 @@ function createInnerPoint(
   return L.circleMarker(
     latlng,
     {
+      pane: 'selection-pane',
       radius: 12,
 
       color: '#0ea5e9',

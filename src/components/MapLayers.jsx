@@ -1,15 +1,12 @@
+import useMapInspection from './useMapInspection'
+import GridLayer from './GridLayer'
+import { showScore } from '../utils/presentation'
 import { memo } from 'react'
 import L from 'leaflet'
 import {
   GeoJSON,
   Pane,
 } from 'react-leaflet'
-
-const METRIC_LABELS = {
-  mobility_gap: 'Mobility gap',
-  bus_priority: 'Bus priority',
-  bike_priority: 'Bike priority',
-}
 
 const ANALYSIS_PANE_STYLE = {
   zIndex: 250,
@@ -25,118 +22,6 @@ const EXISTING_POINTS_PANE_STYLE = {
 
 const RECOMMENDATIONS_PANE_STYLE = {
   zIndex: 370,
-}
-
-function getPriorityColor(score) {
-  if (
-    score === null ||
-    score === undefined
-  ) {
-    return '#9ca3af'
-  }
-
-  if (score >= 75) {
-    return '#dc2626'
-  }
-
-  if (score >= 50) {
-    return '#f97316'
-  }
-
-  if (score >= 25) {
-    return '#eab308'
-  }
-
-  return '#22c55e'
-}
-
-function showValue(
-  value,
-  suffix = ''
-) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return 'Unavailable'
-  }
-
-  if (
-    typeof value === 'number'
-  ) {
-    return `${value.toLocaleString()}${suffix}`
-  }
-
-  return `${value}${suffix}`
-}
-
-function showScore(value) {
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return 'Unavailable'
-  }
-
-  return `${value}/100`
-}
-
-function createTooltipContent(
-  title,
-  rows = []
-) {
-  const container =
-    document.createElement('div')
-
-  container.className =
-    'transport-tooltip-content'
-
-  const titleElement =
-    document.createElement('strong')
-
-  titleElement.textContent = title
-
-  container.appendChild(
-    titleElement
-  )
-
-  rows.forEach((row) => {
-    if (!row) {
-      return
-    }
-
-    const rowElement =
-      document.createElement('span')
-
-    rowElement.textContent = row
-
-    container.appendChild(
-      rowElement
-    )
-  })
-
-  return container
-}
-
-function bindTooltip(
-  layer,
-  title,
-  rows = []
-) {
-  layer.bindTooltip(
-    createTooltipContent(
-      title,
-      rows
-    ),
-    {
-      className:
-        'transport-tooltip',
-      direction: 'top',
-      sticky: true,
-      opacity: 0.96,
-      offset: [0, -6],
-    }
-  )
 }
 
 /*
@@ -155,82 +40,43 @@ function makeKeyboardAccessible(
   accessibleLabel,
   onActivate
 ) {
-  function configureElement() {
-    const element =
-      layer.getElement?.()
-
-    if (!element) {
-      return
-    }
-
-    element.setAttribute(
-      'tabindex',
-      '0'
-    )
-
-    element.setAttribute(
-      'role',
-      'button'
-    )
-
-    element.setAttribute(
-      'aria-label',
-      accessibleLabel
-    )
-
-    element.classList.add(
-      'keyboard-map-feature'
-    )
-
-    function handleKeyDown(
-      event
-    ) {
-      if (
-        event.key !== 'Enter' &&
-        event.key !== ' '
-      ) {
-        return
-      }
-
-      event.preventDefault()
-      event.stopPropagation()
-
-      onActivate()
-    }
-
-    element.addEventListener(
-      'keydown',
-      handleKeyDown
-    )
+  let element
+  function handleKeyDown(event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    event.stopPropagation()
+    onActivate()
   }
-
-  /*
-    Depending on when Leaflet creates the SVG node,
-    getElement() can initially be unavailable.
-
-    Configure immediately when possible and also on
-    the Leaflet "add" event as a safe fallback.
-  */
+  function cleanupElement() {
+    element?.removeEventListener('keydown', handleKeyDown)
+    element = null
+  }
+  function configureElement() {
+    cleanupElement()
+    element = layer.getElement?.()
+    if (!element) return
+    element.setAttribute('tabindex', '0')
+    element.setAttribute('role', 'button')
+    element.setAttribute('aria-label', accessibleLabel)
+    element.classList.add('keyboard-map-feature')
+    element.addEventListener('keydown', handleKeyDown)
+  }
   configureElement()
-
-  layer.once(
-    'add',
-    configureElement
-  )
+  layer.on({ add: configureElement, remove: cleanupElement })
 }
 
-function MapLayers({
+const TransportLayers = memo(function TransportLayers({
   busStops,
   busRoutes,
   metroStations,
   cycleways,
-  grid,
   busRecommendations,
   bikeRecommendations,
-  selectedMetric,
   visibility,
   onSelect,
+  labels,
 }) {
+  const canInspect = useMapInspection()
   const adaptiveLineClass =
     visibility.grid
       ? 'grid-reactive-line'
@@ -255,130 +101,6 @@ function MapLayers({
 
   return (
     <>
-      {/* ================================================== */}
-      {/* Analysis grid                                      */}
-      {/* ================================================== */}
-
-      <Pane
-        name="analysis-grid-pane"
-        style={
-          ANALYSIS_PANE_STYLE
-        }
-      >
-        {visibility.grid &&
-          grid && (
-            <GeoJSON
-              key={
-                selectedMetric
-              }
-              data={grid}
-              style={(
-                feature
-              ) => ({
-                color:
-                  '#475569',
-                weight: 0.8,
-                opacity: 0.62,
-                fillColor:
-                  getPriorityColor(
-                    feature
-                      .properties[
-                      selectedMetric
-                    ]
-                  ),
-                fillOpacity: 0.42,
-              })}
-              onEachFeature={(
-                feature,
-                layer
-              ) => {
-                const properties =
-                  feature.properties
-
-                const activate =
-                  () => {
-                    selectFeature(
-                      'Grid cell',
-                      feature
-                    )
-                  }
-
-                bindTooltip(
-                  layer,
-                  'Analysis cell',
-                  [
-                    `ID: ${
-                      properties.id
-                    }`,
-                    `${
-                      METRIC_LABELS[
-                        selectedMetric
-                      ]
-                    }: ${showScore(
-                      properties[
-                        selectedMetric
-                      ]
-                    )}`,
-                  ]
-                )
-
-                makeKeyboardAccessible(
-                  layer,
-                  `Analysis cell ${
-                    properties.id
-                  }. ${
-                    METRIC_LABELS[
-                      selectedMetric
-                    ]
-                  }: ${showScore(
-                    properties[
-                      selectedMetric
-                    ]
-                  )}`,
-                  activate
-                )
-
-                layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 1.4,
-                      opacity: 0.82,
-                      fillOpacity:
-                        0.47,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#475569',
-                      weight: 0.8,
-                      opacity: 0.62,
-                      fillColor:
-                        getPriorityColor(
-                          properties[
-                            selectedMetric
-                          ]
-                        ),
-                      fillOpacity:
-                        0.42,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'click',
-                  activate
-                )
-              }}
-            />
-          )}
-      </Pane>
-
       {/* ================================================== */}
       {/* Existing network lines                             */}
       {/* ================================================== */}
@@ -417,20 +139,6 @@ function MapLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Bus route',
-                  [
-                    `Route: ${showValue(
-                      properties.route_ref
-                    )}`,
-                    `Daily validations: ${showValue(
-                      properties.avg_daily_validations
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Bus route ${
@@ -442,30 +150,8 @@ function MapLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 6,
-                      opacity: 1,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#2563eb',
-                      weight: 4,
-                      opacity: 0.8,
-                    })
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -499,18 +185,6 @@ function MapLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Cycleway',
-                  [
-                    `Length: ${showValue(
-                      properties.length_m,
-                      ' m'
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Cycleway ${
@@ -521,30 +195,8 @@ function MapLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 6,
-                      opacity: 1,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#16a34a',
-                      weight: 4,
-                      opacity: 0.82,
-                    })
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -600,17 +252,6 @@ function MapLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Bus stop',
-                  [
-                    `ID: ${
-                      properties.id
-                    }`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Bus stop ${
@@ -621,26 +262,8 @@ function MapLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setRadius(
-                      8
-                    )
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setRadius(
-                      6
-                    )
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -688,17 +311,6 @@ function MapLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Metro station',
-                  [
-                    `Daily entries: ${showValue(
-                      properties.avg_daily_entries
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Metro station ${
@@ -709,26 +321,8 @@ function MapLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setRadius(
-                      10
-                    )
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setRadius(
-                      8
-                    )
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -787,50 +381,17 @@ function MapLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  'Candidate Bus Improvement',
-                  [
-                    `Priority: ${showScore(
-                      properties.priority
-                    )}`,
-                    `Population affected: ${showValue(
-                      properties.population_affected
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
-                  `Candidate Bus Improvement ${
-                    properties.id
-                  }. Priority ${showScore(
+                  `${labels.get(properties.id) ?? 'Candidate Bus Stop'}. Priority ${showScore(
                     properties.priority
                   )}`,
                   activate
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setRadius(
-                      12
-                    )
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setRadius(
-                      10
-                    )
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -869,63 +430,34 @@ function MapLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  'Candidate Bicycle Corridor',
-                  [
-                    `Priority: ${showScore(
-                      properties.priority
-                    )}`,
-                    `Length: ${showValue(
-                      properties.length_m,
-                      ' m'
-                    )}`,
-                    'Further engineering assessment',
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
-                  `Candidate Bicycle Corridor ${
-                    properties.id
-                  }. Priority ${showScore(
+                  `${labels.get(properties.id) ?? 'Bicycle Corridor'}. Priority ${showScore(
                     properties.priority
                   )}. Further engineering assessment.`,
                   activate
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 8,
-                      opacity: 1,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#0891b2',
-                      weight: 6,
-                      opacity: 0.9,
-                      dashArray:
-                        '10 6',
-                    })
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
           )}
       </Pane>
+    </>
+  )
+})
+
+function MapLayers({ grid, selectedMetric, ...transportProps }) {
+  return (
+    <>
+      <Pane name="analysis-grid-pane" style={ANALYSIS_PANE_STYLE}>
+        <GridLayer data={grid} selectedMetric={selectedMetric}
+          visible={transportProps.visibility.grid} onSelect={transportProps.onSelect} />
+      </Pane>
+      <TransportLayers {...transportProps} />
     </>
   )
 }

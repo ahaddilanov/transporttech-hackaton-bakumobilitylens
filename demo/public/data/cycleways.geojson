@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "synthetic": true,
+    "source": "Original hand-authored Baku Mobility Lens UI fixture",
+    "limitations": [
+      "Made-up coordinates and values; not real infrastructure, residents, routing or analysis results."
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "synthetic:lane:1",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            49.85,
+            40.419
+          ],
+          [
+            49.856,
+            40.419
+          ]
+        ]
+      },
+      "properties": {
+        "id": "synthetic:lane:1",
+        "name": "Synthetic existing lane",
+        "length_m": 510,
+        "source": "Synthetic example"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "source": "Original hand-authored Baku Mobility Lens UI fixture",
+  "limitations": [
+    "Made-up coordinates and values; not real infrastructure, residents, routing or analysis results."
+  ],
+  "generated_at": "2026-01-01T00:00:00Z",
+  "grid_cells": 4,
+  "population_estimate": 300,
+  "high_bus_priority_cells": 2,
+  "high_bike_priority_cells": 2
+}
