@@ -12,10 +12,10 @@ Accessibility is measured with **straight-line distances**, not walking routes o
 journey times. Candidates have not passed field, engineering, legal-access or
 safety assessments. Priority measures modeled intervention need, not certainty.
 
-![Synthetic demo: map overview with scoring and infrastructure layers](docs/images/synthetic-overview.jpg)
+![Real Baku application: accessibility priority grid and transport layers](docs/images/baku-real-overview.png)
 
-*Synthetic demo — invented vector features and illustrative values, not real
-findings. Background map © OpenStreetMap contributors.*
+*Real project output — Baku accessibility scores and mapped transport layers.
+Priority indicates modeled intervention need. Background map © OpenStreetMap contributors.*
 
 ## Implemented functionality
 
@@ -31,19 +31,49 @@ findings. Background map © OpenStreetMap contributors.*
   responsive panels, light/dark themes and saved before/after comparisons.
 - Validated static frontend exports and a ZIP integration package.
 
-## Inspect candidates and compare accessibility
+## Inspect recommendations
+
+![Real Baku application: selected bus-stop candidate and recommendation inspector](docs/images/baku-real-recommendatio.png)
+
+*Real project output — a selected bus-stop candidate with its priority and modeled
+accessibility benefit. Recommendations are hypothetical and require field,
+engineering and safety assessment.*
+
+## Compare before / after accessibility
+
+![Real Baku application: candidate inspector with the Before / After accessibility section collapsed](docs/images/baku-real-before-after.png.png)
+
+*Real project output — a candidate inspector with the Before / After section
+collapsed. Expanding it reveals saved hypothetical straight-line accessibility
+estimates, not predicted ridership or verified infrastructure outcomes.*
+
+Saved comparisons distinguish population newly within 500 m from everyone with
+improved proximity. Coverage change is measured in percentage points; individual
+scenario gains can overlap and must not be summed into a citywide benefit.
+
+Both screenshots preserve visible OpenStreetMap attribution.
+[Image details and synthetic capture instructions](docs/images/README.md).
+
+<details>
+<summary>Optional Demo gallery — synthetic examples</summary>
+
+These screenshots show invented features and illustrative UI values, not real
+Baku findings. The background map is © OpenStreetMap contributors.
+
+![Synthetic demo: map overview with scoring and infrastructure layers](docs/images/synthetic-overview.jpg)
+
+*Synthetic demo — scoring and layer controls.*
 
 ![Synthetic demo: selected bus candidate inspector](docs/images/synthetic-inspector.jpg)
 
-*Synthetic demo — click or select a ranked candidate to inspect its attributes.*
+*Synthetic demo — candidate selection and feature inspection.*
 
-![Synthetic demo: hypothetical before and after accessibility comparison](docs/images/synthetic-before-after.jpg)
+![Synthetic demo: expanded before and after accessibility comparison](docs/images/synthetic-before-after.jpg)
 
-*Synthetic demo — the saved example distinguishes newly covered population from
-everyone with improved proximity. These numbers are illustrative UI fixtures,
-not calculated Baku results. Both screenshots retain OSM basemap attribution.*
+*Synthetic demo — expanded comparison with illustrative values, not calculated
+Baku results. See the installation instructions below to run this demo.*
 
-[Capture details and reproduction steps](docs/images/README.md).
+</details>
 
 ## Validated project statistics
 
@@ -106,8 +136,6 @@ committed lockfile; no additional mapping framework is required.
 ```bash
 git clone https://github.com/baku-mobilitylens-team/baku-mobility-lens.git
 cd baku-mobility-lens
-# Until this work is merged, use the integration branch when available:
-git switch integration/backend-and-scenarios
 npm ci
 npm run dev:demo
 ```

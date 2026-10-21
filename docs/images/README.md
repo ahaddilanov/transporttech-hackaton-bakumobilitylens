@@ -1,5 +1,33 @@
 # Application screenshots
 
+## Real application outputs
+
+The project owner supplied the following screenshots of the real Baku application.
+The filenames are retained exactly as received, including the shortened
+`recommendatio` name and doubled `.png.png` extension. Dimensions below were read
+from the PNG headers. Capture dates, browser settings and the exact source-data
+revision were not supplied and are not inferred from filesystem timestamps.
+
+| File | Visible state | Dimensions |
+| --- | --- | --- |
+| `baku-real-overview.png` | Overall accessibility priority grid and transport layer controls | 1920 × 942 |
+| `baku-real-recommendatio.png` | Selected bus candidate inspector alongside the rankings | 1920 × 944 |
+| `baku-real-before-after.png.png` | Candidate inspector with Before / After accessibility collapsed | 1920 × 945 |
+
+These are real project outputs, but their candidate infrastructure and estimated
+accessibility improvements are hypothetical. The before/after file does not
+show the expanded scenario metrics; an additional capture with that section
+expanded would be needed to illustrate those real values. The synthetic gallery
+separately shows the expanded interface with illustrative numbers.
+
+All three supplied images retain visible OpenStreetMap attribution at the lower
+right. They were not cropped, resized or otherwise edited in this update.
+Screenshots do not grant permission to redistribute underlying datasets.
+Third-party data and basemap terms remain separate from the MIT source-code
+license; see the [source audit](../../backend/DATA_SOURCES.md).
+
+## Synthetic demo screenshots
+
 Captured on 2026-10-21 from this repository's `npm run dev:demo`, using an
 isolated headless Chrome profile and the existing dependency-free CDP helper
 in `tests/browser-client.mjs`. These are actual application screenshots, not
@@ -20,7 +48,7 @@ personal browser profile or account information in the captures.
 Total: 1,485,246 bytes (about 1.42 MiB). GitHub scales the images to the available
 README width; opening an image shows its full resolution.
 
-## Reproduce the views
+### Reproduce the synthetic views
 
 1. Run `npm run dev:demo -- --host 127.0.0.1 --port 5174 --strictPort` from the
    repository root and open the printed local URL in a fresh browser profile.
