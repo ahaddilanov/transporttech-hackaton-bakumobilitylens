@@ -430,23 +430,8 @@ body {
   cursor: pointer;
 }
 
-.app
-  .leaflet-interactive.keyboard-map-feature:focus {
-  outline: 3px solid #2563eb;
-  outline-offset: 3px;
-
-  stroke-opacity: 1;
-}
-
-.app[data-theme="dark"]
-  .leaflet-interactive.keyboard-map-feature:focus {
-  outline-color: #93c5fd;
-}
-
-/*
-  Browsers supporting :focus-visible use this stronger
-  state only for keyboard navigation.
-*/
+/* Keyboard focus is distinct from the selected-feature halo. Mouse focus
+   must not leave an outline on a previously clicked feature. */
 
 .app
   .leaflet-interactive.keyboard-map-feature:focus-visible {

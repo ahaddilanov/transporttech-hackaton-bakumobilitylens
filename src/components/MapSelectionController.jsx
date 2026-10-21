@@ -1,9 +1,12 @@
+import useMapInspection from './useMapInspection'
 import { useEffect } from 'react'
 import { useMapEvents } from 'react-leaflet'
 
 function MapSelectionController({ onClearSelection }) {
+  const canInspect = useMapInspection()
   useMapEvents({
     click(event) {
+      if (!canInspect()) return
       const target = event.originalEvent?.target
 
       const interactive = target instanceof Element
@@ -11,7 +14,7 @@ function MapSelectionController({ onClearSelection }) {
         : null
 
       // Grid feature clicks stop at their Canvas layer. A Canvas click that
-      // reaches the map is empty space, even if its hover class is still set.
+      // reaches the map is empty space.
       if (interactive && interactive.tagName.toLowerCase() !== 'canvas') {
         return
       }

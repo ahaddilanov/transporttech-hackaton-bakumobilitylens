@@ -1,5 +1,6 @@
+import useMapInspection from './useMapInspection'
 import GridLayer from './GridLayer'
-import { showValue, showScore } from '../utils/presentation'
+import { showScore } from '../utils/presentation'
 import { memo } from 'react'
 import L from 'leaflet'
 import {
@@ -23,64 +24,6 @@ const RECOMMENDATIONS_PANE_STYLE = {
   zIndex: 370,
 }
 
-function createTooltipContent(
-  title,
-  rows = []
-) {
-  const container =
-    document.createElement('div')
-
-  container.className =
-    'transport-tooltip-content'
-
-  const titleElement =
-    document.createElement('strong')
-
-  titleElement.textContent = title
-
-  container.appendChild(
-    titleElement
-  )
-
-  rows.forEach((row) => {
-    if (!row) {
-      return
-    }
-
-    const rowElement =
-      document.createElement('span')
-
-    rowElement.textContent = row
-
-    container.appendChild(
-      rowElement
-    )
-  })
-
-  return container
-}
-
-function bindTooltip(
-  layer,
-  title,
-  rows = []
-) {
-  layer.bindTooltip(
-    createTooltipContent(
-      title,
-      rows
-    ),
-    {
-      className:
-        'transport-tooltip',
-      direction: 'top',
-      sticky: true,
-      opacity: 0.96,
-      offset: [0, -6],
-    }
-  )
-}
-
 /*
   Leaflet GeoJSON features are normally optimized
   for mouse interaction.
@@ -97,68 +40,29 @@ function makeKeyboardAccessible(
   accessibleLabel,
   onActivate
 ) {
-  function configureElement() {
-    const element =
-      layer.getElement?.()
-
-    if (!element) {
-      return
-    }
-
-    element.setAttribute(
-      'tabindex',
-      '0'
-    )
-
-    element.setAttribute(
-      'role',
-      'button'
-    )
-
-    element.setAttribute(
-      'aria-label',
-      accessibleLabel
-    )
-
-    element.classList.add(
-      'keyboard-map-feature'
-    )
-
-    function handleKeyDown(
-      event
-    ) {
-      if (
-        event.key !== 'Enter' &&
-        event.key !== ' '
-      ) {
-        return
-      }
-
-      event.preventDefault()
-      event.stopPropagation()
-
-      onActivate()
-    }
-
-    element.addEventListener(
-      'keydown',
-      handleKeyDown
-    )
+  let element
+  function handleKeyDown(event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    event.stopPropagation()
+    onActivate()
   }
-
-  /*
-    Depending on when Leaflet creates the SVG node,
-    getElement() can initially be unavailable.
-
-    Configure immediately when possible and also on
-    the Leaflet "add" event as a safe fallback.
-  */
+  function cleanupElement() {
+    element?.removeEventListener('keydown', handleKeyDown)
+    element = null
+  }
+  function configureElement() {
+    cleanupElement()
+    element = layer.getElement?.()
+    if (!element) return
+    element.setAttribute('tabindex', '0')
+    element.setAttribute('role', 'button')
+    element.setAttribute('aria-label', accessibleLabel)
+    element.classList.add('keyboard-map-feature')
+    element.addEventListener('keydown', handleKeyDown)
+  }
   configureElement()
-
-  layer.once(
-    'add',
-    configureElement
-  )
+  layer.on({ add: configureElement, remove: cleanupElement })
 }
 
 const TransportLayers = memo(function TransportLayers({
@@ -172,6 +76,7 @@ const TransportLayers = memo(function TransportLayers({
   onSelect,
   labels,
 }) {
+  const canInspect = useMapInspection()
   const adaptiveLineClass =
     visibility.grid
       ? 'grid-reactive-line'
@@ -234,20 +139,6 @@ const TransportLayers = memo(function TransportLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Bus route',
-                  [
-                    `Route: ${showValue(
-                      properties.route_ref
-                    )}`,
-                    `Daily validations: ${showValue(
-                      properties.avg_daily_validations
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Bus route ${
@@ -259,30 +150,8 @@ const TransportLayers = memo(function TransportLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 6,
-                      opacity: 1,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#2563eb',
-                      weight: 4,
-                      opacity: 0.8,
-                    })
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -316,18 +185,6 @@ const TransportLayers = memo(function TransportLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Cycleway',
-                  [
-                    `Length: ${showValue(
-                      properties.length_m,
-                      ' m'
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Cycleway ${
@@ -338,30 +195,8 @@ const TransportLayers = memo(function TransportLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 6,
-                      opacity: 1,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#16a34a',
-                      weight: 4,
-                      opacity: 0.82,
-                    })
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -417,17 +252,6 @@ const TransportLayers = memo(function TransportLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Bus stop',
-                  [
-                    `ID: ${
-                      properties.id
-                    }`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Bus stop ${
@@ -438,26 +262,8 @@ const TransportLayers = memo(function TransportLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setRadius(
-                      8
-                    )
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setRadius(
-                      6
-                    )
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -505,17 +311,6 @@ const TransportLayers = memo(function TransportLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  properties.name ??
-                    'Metro station',
-                  [
-                    `Daily entries: ${showValue(
-                      properties.avg_daily_entries
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `Metro station ${
@@ -526,26 +321,8 @@ const TransportLayers = memo(function TransportLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setRadius(
-                      10
-                    )
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setRadius(
-                      8
-                    )
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -604,19 +381,6 @@ const TransportLayers = memo(function TransportLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  labels.get(properties.id) ?? 'Candidate Bus Stop',
-                  [
-                    `Priority: ${showScore(
-                      properties.priority
-                    )}`,
-                    `Population affected: ${showValue(
-                      properties.population_affected
-                    )}`,
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `${labels.get(properties.id) ?? 'Candidate Bus Stop'}. Priority ${showScore(
@@ -626,26 +390,8 @@ const TransportLayers = memo(function TransportLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setRadius(
-                      12
-                    )
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setRadius(
-                      10
-                    )
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
@@ -684,21 +430,6 @@ const TransportLayers = memo(function TransportLayers({
                     )
                   }
 
-                bindTooltip(
-                  layer,
-                  labels.get(properties.id) ?? 'Bicycle Corridor',
-                  [
-                    `Priority: ${showScore(
-                      properties.priority
-                    )}`,
-                    `Length: ${showValue(
-                      properties.length_m,
-                      ' m'
-                    )}`,
-                    'Further engineering assessment',
-                  ]
-                )
-
                 makeKeyboardAccessible(
                   layer,
                   `${labels.get(properties.id) ?? 'Bicycle Corridor'}. Priority ${showScore(
@@ -708,32 +439,8 @@ const TransportLayers = memo(function TransportLayers({
                 )
 
                 layer.on(
-                  'mouseover',
-                  () => {
-                    layer.setStyle({
-                      weight: 8,
-                      opacity: 1,
-                    })
-                  }
-                )
-
-                layer.on(
-                  'mouseout',
-                  () => {
-                    layer.setStyle({
-                      color:
-                        '#0891b2',
-                      weight: 6,
-                      opacity: 0.9,
-                      dashArray:
-                        '10 6',
-                    })
-                  }
-                )
-
-                layer.on(
                   'click',
-                  activate
+                  () => { if (canInspect()) activate() }
                 )
               }}
             />
