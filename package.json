@@ -5,7 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:demo": "vite --mode demo",
     "build": "vite build",
+    "build:demo": "vite build --mode demo",
+    "preview:demo": "vite preview --mode demo",
+    "demo:generate": "node scripts/create_demo_data.mjs",
+    "test": "node --test tests/presentation.test.mjs tests/bounds-index.test.mjs tests/scenarios.test.mjs tests/demo-data.test.mjs",
+    "test:real-data": "node --test tests/scenarios-real-data.test.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

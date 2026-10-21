@@ -15,12 +15,12 @@ function AppHeader({
           className="brand-mark"
           aria-hidden="true"
         >
-          T
+          B
         </div>
 
         <div className="brand-copy">
-          <strong>TransportTech</strong>
-          <span>Baku mobility planning</span>
+          <strong>Baku Mobility Lens</strong>
+          <span>{dataMode === 'demo' ? 'Synthetic examples — not real findings' : 'Baku mobility accessibility study'}</span>
         </div>
       </div>
 
@@ -38,7 +38,7 @@ function AppHeader({
           title={
             usingApi
               ? 'Frontend data loaded from the configured API'
-              : 'Frontend data loaded from local static files'
+              : dataMode === 'demo' ? 'Entirely made-up geometry and values for interface demonstration' : 'Frontend data loaded from local static files'
           }
         >
           <span
@@ -48,7 +48,7 @@ function AppHeader({
 
           {usingApi
             ? 'API data'
-            : 'Static data'}
+            : dataMode === 'demo' ? 'Synthetic demo' : 'Static data'}
         </span>
       </div>
 

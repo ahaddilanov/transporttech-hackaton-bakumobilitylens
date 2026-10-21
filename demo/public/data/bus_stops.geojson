@@ -1,0 +1,44 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "synthetic": true,
+    "source": "Original hand-authored Baku Mobility Lens UI fixture",
+    "limitations": [
+      "Made-up coordinates and values; not real infrastructure, residents, routing or analysis results."
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "synthetic:stop:1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          49.86,
+          40.413
+        ]
+      },
+      "properties": {
+        "id": "synthetic:stop:1",
+        "name": "Synthetic stop A",
+        "source": "Synthetic example"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "synthetic:stop:2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          49.865,
+          40.42
+        ]
+      },
+      "properties": {
+        "id": "synthetic:stop:2",
+        "name": null,
+        "source": "Synthetic example"
+      }
+    }
+  ]
+}

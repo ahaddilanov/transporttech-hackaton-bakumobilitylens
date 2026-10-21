@@ -1,5 +1,12 @@
 # Saved before/after accessibility comparisons
 
+Release setup: `npm test` now runs the source-independent formatting/validation
+checks; `npm run test:real-data` retains the complete-snapshot ID and five-policy-
+difference assertions formerly embedded in `tests/scenarios.test.mjs`. The real
+scenario file is intentionally not shipped. Use `npm run dev:demo` for the separate
+synthetic saved comparisons. The implementation and earlier measurements below
+describe the real local snapshot.
+
 The existing DetailsPanel now includes a native, initially collapsed **Before / After accessibility** section for bus and bicycle recommendations. It loads `public/data/intervention_scenarios.json` through the existing parallel JSON-loading and validation path. No simulation is calculated in the browser and no additional floating panel is created.
 
 ## Inspected data and matching

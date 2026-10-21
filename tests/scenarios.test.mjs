@@ -1,33 +1,15 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
 import { validateInterventionScenarios } from '../src/data/validateData.js'
 import { createScenarioIndex, findScenario } from '../src/data/scenarios.js'
 import { showValue, showPercentage, showPercentagePoints } from '../src/utils/presentation.js'
 
-const read = async name => JSON.parse(await readFile(new URL(`../public/data/${name}`, import.meta.url), 'utf8'))
-const document = await read('intervention_scenarios.json')
-const bus = await read('bus_recommendations.geojson')
-const bike = await read('bike_recommendations.geojson')
 const fixture = () => ({ metadata: {}, summary: {}, scenarios: [{
   intervention_id: 'full:original:ID', intervention_type: 'bus_stop',
   population_improved: 100, newly_covered_population: 60,
   coverage_before_pct: 20, coverage_after_pct: 80, coverage_change_pp: 60,
   avg_access_improvement_m: 662.198, affected_cells: 2,
 }] })
-
-test('actual document validates without mutation and retains all 34 exact-ID matches', () => {
-  const before = JSON.stringify(document)
-  assert.equal(validateInterventionScenarios(document), document)
-  const index = createScenarioIndex(document)
-  assert.equal(index.size, 34)
-  for (const [type, collection] of [['Bus recommendation', bus], ['Bike recommendation', bike]]) {
-    for (const feature of collection.features) {
-      assert.equal(findScenario(index, { type, properties: feature.properties })?.intervention_id, feature.properties.id)
-    }
-  }
-  assert.equal(JSON.stringify(document), before)
-})
 
 test('full IDs and intervention types must match; absent scenarios never become zero estimates', () => {
   const index = createScenarioIndex(validateInterventionScenarios(fixture()))
@@ -72,10 +54,10 @@ test('coverage change uses percentage points, not relative percent or rounded di
   assert.throws(() => validateInterventionScenarios(wrong), /after minus before/)
   const smaller = fixture(); smaller.scenarios[0].coverage_after_pct = 10; smaller.scenarios[0].coverage_change_pp = -10
   assert.throws(() => validateInterventionScenarios(smaller), /cannot decrease/)
-  const actual = document.scenarios[0]
-  assert.equal(showPercentage(actual.coverage_before_pct), '14.49%')
-  assert.equal(showPercentage(actual.coverage_after_pct), '15.67%')
-  assert.equal(showPercentagePoints(actual.coverage_change_pp), '+1.18 pp')
+  const actual = fixture().scenarios[0]
+  assert.equal(showPercentage(actual.coverage_before_pct), '20.0%')
+  assert.equal(showPercentage(actual.coverage_after_pct), '80.0%')
+  assert.equal(showPercentagePoints(actual.coverage_change_pp), '+60.0 pp')
 })
 
 test('human formatting preserves null/zero distinctions and sensible units', () => {
@@ -95,19 +77,14 @@ test('human formatting preserves null/zero distinctions and sensible units', () 
   assert.equal(validateInterventionScenarios(data).scenarios[0].population_improved, null)
 })
 
-test('population improved remains distinct and all five OSM-exclusion records survive', () => {
-  const valid = validateInterventionScenarios(document)
-  assert.ok(valid.scenarios[0].population_improved > valid.scenarios[0].newly_covered_population)
-  const differences = valid.scenarios.filter(s => s.reconciliation?.status === 'consistent_with_osm_exclusion')
-  assert.equal(differences.length, 5)
-  for (const scenario of differences) {
-    assert.equal(scenario.intervention_type, 'bike_corridor')
-    assert.equal(scenario.reconciliation.osm_gate_recomputed_by_simulator, false)
-    assert.equal(scenario.reconciliation.simulation_value, scenario.newly_covered_population)
-    assert.ok(scenario.reconciliation.recommendation_value < scenario.newly_covered_population)
-    assert.match(scenario.reconciliation.explanation, /cannot independently verify/)
-  }
-  const inconsistent = structuredClone(document)
-  inconsistent.scenarios[0].reconciliation.simulation_value += 100
-  assert.throws(() => validateInterventionScenarios(inconsistent), /inconsistent|newly covered/)
+test('reconciliation preserves distinct population meanings and rejects inconsistent values', () => {
+  const data = fixture()
+  data.scenarios[0].reconciliation = { status: 'match', recommendation_value: 60,
+    simulation_value: 60, difference_population: 0 }
+  const before = JSON.stringify(data)
+  assert.equal(validateInterventionScenarios(data), data)
+  assert.equal(JSON.stringify(data), before)
+  assert.notEqual(data.scenarios[0].population_improved, data.scenarios[0].newly_covered_population)
+  data.scenarios[0].reconciliation.simulation_value = 100
+  assert.throws(() => validateInterventionScenarios(data), /inconsistent|newly covered/)
 })

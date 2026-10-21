@@ -289,7 +289,7 @@ The five highest-ranked standalone modeled-population gains are approximately
 **68,841.87; 33,407.36; 44,922.09; 44,775.78; 37,932.57**; their order also reflects
 local priority and routing suitability. They are not additive unique residents.
 
-Run from `/home/osman/projects/transporttech-backend` with the existing environment:
+Run from the integrated repository's `backend/` directory with the existing environment:
 
 ```bash
 .venv/bin/python scripts/16_recommend_bike_corridors.py

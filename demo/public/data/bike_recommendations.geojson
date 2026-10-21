@@ -1,0 +1,41 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "synthetic": true,
+    "source": "Original hand-authored Baku Mobility Lens UI fixture",
+    "limitations": [
+      "Made-up coordinates and values; not real infrastructure, residents, routing or analysis results."
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "synthetic:bike:1",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            49.856,
+            40.412
+          ],
+          [
+            49.862,
+            40.419
+          ]
+        ]
+      },
+      "properties": {
+        "id": "synthetic:bike:1",
+        "priority": 90,
+        "length_m": 950,
+        "population_coverage_gain": 200,
+        "start_name": "Synthetic connection A",
+        "end_name": "Synthetic destination B",
+        "reason": [
+          "Synthetic UI example; not a real infrastructure proposal."
+        ],
+        "source": "Synthetic example"
+      }
+    }
+  ]
+}

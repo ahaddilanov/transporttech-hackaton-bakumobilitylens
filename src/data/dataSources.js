@@ -1,4 +1,5 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '')
+const IS_DEMO = import.meta.env.MODE === 'demo'
+const API_BASE_URL = (IS_DEMO ? '' : import.meta.env.VITE_API_BASE_URL ?? '')
   .trim()
   .replace(/\/+$/, '')
 
@@ -27,7 +28,7 @@ const API_SOURCES = {
   summary: `${API_BASE_URL}/api/v1/summary`,
 }
 
-export const DATA_MODE = API_BASE_URL ? 'api' : 'static'
+export const DATA_MODE = IS_DEMO ? 'demo' : API_BASE_URL ? 'api' : 'static'
 
 export const DATA_SOURCES =
   DATA_MODE === 'api' ? API_SOURCES : STATIC_SOURCES

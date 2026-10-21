@@ -247,3 +247,78 @@ Execution and offline verification from the repository root:
 .venv/bin/python scripts/15_build_bike_network.py --verify-only
 .venv/bin/python -m unittest discover -s tests -v
 ```
+
+## Public release data-rights audit — 2026-10-21
+
+This addendum separates **source attribution, observed license evidence and
+permission to redistribute**. Attribution alone does not establish redistribution
+permission. Processing success, public download availability and a future license
+for our code must not be interpreted as permission to republish provider data.
+No real data was downloaded, replaced, staged or published for this release audit.
+
+### Code, dependencies and source data are separate
+
+| Material | Evidence / current release status | Required action before redistribution |
+| --- | --- | --- |
+| Original project Python/JavaScript/CSS, documentation and newly authored synthetic fixtures | No project LICENSE exists. MIT is a recommendation, pending both contributors' approval; it has not been adopted. Dependency packages carry their own licenses. | Agree ownership and code license with both developers. Retain applicable third-party notices; do not apply the code license to external data. |
+| OpenStreetMap stops, driving/bicycle networks and OSM-derived analysis | The [OSM copyright page](https://www.openstreetmap.org/copyright), checked 2026-10-21, identifies ODbL and attribution requirements. Bicycle retrieval provenance is recorded above; exact historical stop acquisition date is still unknown. | Retain “© OpenStreetMap contributors,” link OSM/ODbL as appropriate, and review database/derived-database and produced-work obligations for each distributed artifact. A code license does not replace ODbL. |
+| OpenStreetMap background tiles | Separate hosted tile service, used by both real and synthetic maps. | Follow the [OSMF tile usage policy](https://operations.osmfoundation.org/policies/tiles/), preserve visible attribution and review screenshots. Open data does not imply unrestricted tile-service use. |
+| WorldPop raster and modeled population derivatives | Earlier local raster audit recorded embedded `CC-BY-4.0`, exact R2025A/v1 filename and SHA-256 above. Raw raster is absent from the integrated workspace's raw directory. The provider's [R2025A release statement](https://data.worldpop.org/repo/prj/Global_2015_2030/R2025A/doc/Global2_Release_Statement_R2025A_v1.pdf) was read during this audit; the license evidence recorded here is the earlier embedded raster tag. | Retain product/version/year, provider attribution, license link and modifications in derivative notices; preserve dataset-specific evidence. Obtain authorized source bytes for full reproduction. Embedded license evidence is not a claim that mixed-source exports have one blanket license. |
+| geoBoundaries study boundary and derivatives | The [current provider page](https://www.geoboundaries.org/index.html), checked 2026-10-21, says CC BY 4.0 and requests acknowledgement. The older project log says CC BY-SA 3.0 and was not independently verified. The pinned `9469f09` release's metadata/license could not be fetched in this audit. | Resolve the conflict against the exact pinned AZE ADM2 release metadata and its upstream source; archive that evidence and citation before distributing the boundary or derivatives. The current website does not prove the pinned historical file's terms. |
+| OpenData.az route validations, metro coordinates/entries and selected POIs | Publisher references exist; the [metro-exit dataset page](https://opendata.az/en/@baki-metropoliteni/metro-cixislari-uzre-koordinatlar) was reachable on 2026-10-21. The inspected page did not establish resource-specific redistribution terms. Provenance/terms for the exact local CSVs and `azrbaycanda_obyektlr_v_mkanlar.geojson` remain incomplete. | Record publisher, resource URL, version/date, license or written permission and matching source checksum for **each** input. A portal label or reachable CSV is not a license. Do not imply the route/day or station/day records are stop-level demand or OD data. |
+| AYNA-attributed transport geometry | The four supplied originals listed above lack verified redistribution rights, provider URL, acquisition date and complete operational metadata. | Obtain explicit applicable terms or permission from the rights holder for source geometries, derivatives and public displays. Confirm provenance and scope. **Blocked: do not publish these geometries or assume attribution authorizes reuse.** |
+
+The frontend's existing visible OSM map credit now links to the OSM copyright/
+license page. That corrects a missing link in the basemap attribution; it is not
+a clearance decision for any source layer, derivative database or screenshot.
+
+### Precise data publication blockers
+
+1. **AYNA geometry rights and derivatives:** hold all four supplied original
+   KMZ/GeoJSON resources, `data/processed/transport/bus_routes*.geojson`,
+   `cycleways.geojson`, AYNA-derived study areas, bus/bicycle recommendation
+   geometries, and mixed-source analysis/export packages until scope is reviewed.
+   Review scored-grid properties and scenario values as derivatives too; this
+   audit does not decide that removing explicit AYNA coordinates clears them.
+2. **OpenData resource provenance/terms:** resolve the exact route-validation,
+   station-entry, entrance-coordinate and POI source rights. Hold the affected
+   raw resources and transport/POI/analysis derivatives meanwhile.
+3. **Boundary license evidence:** resolve the pinned-version geoBoundaries
+   discrepancy and preserve upstream citation/version evidence. Do not silently
+   replace the boundary with a new download to make the documentation agree.
+4. **OSM and WorldPop derivative notices:** prepare a dataset-specific attribution
+   and license manifest for any authorized distribution, including ODbL review
+   and the recorded WorldPop CC BY 4.0 product information. The existing export
+   README is useful provenance, not a clearance certificate.
+5. **Publication surfaces beyond individual GeoJSON files:** hold the complete
+   real `public/data/` overrides, `data/exports/complete/`,
+   `data/exports/frontend_complete.zip`, normal frontend `dist/`, screenshots,
+   attachments, Git LFS/release assets and any historical real-data copies until
+   the same permission and attribution review is complete. No such review is
+   implied by the synthetic demo build.
+
+The reachable-ref audit found a specific historical exposure to review:
+`9a8358d` (`Integrate real baseline mobility datasets`), recorded locally at
+`origin/real-baseline-integration`, contains real `public/data/grid.geojson`
+(35,029), `bus_stops.geojson` (1,414), `bus_routes.geojson` (243),
+`metro_stations.geojson` (27), `cycleways.geojson` (60), and `summary.json`.
+This commit is **outside the current integration branch's ancestry**, but remains
+reachable through that remote-tracking ref. Its current server-side availability
+and repository visibility were not checked by a fetch or authenticated GitHub
+query. Review all remote branches, release assets, screenshots and copies with
+the owners before changing visibility. No history or refs were changed here.
+
+These paths under `data/` are relative to `backend/`. Local data and networks
+remain preserved and ignored; ignore rules do not remove previously tracked
+files or clear Git history. `public/data/` originally tracked small mock fixtures;
+its current local replacements are real data and **must not be staged**. New
+synthetic fixtures under `../demo/public/data/` are authored from scratch with
+made-up geometry and numerical examples, not sampled from AYNA/OSM/WorldPop.
+Their vector content has no asserted provider provenance; the online basemap
+still requires OSM credit/service compliance.
+
+For current artifact counts, missing raw inputs, history/IDE findings and the
+reviewed staging list, see [DATA_INVENTORY.md](DATA_INVENTORY.md#integrated-workspace-release-addendum--2026-10-21)
+and [RELEASE_READINESS.md](../RELEASE_READINESS.md). The initial source inspection
+above remains dated historical evidence. No unknown date, permission, official
+service relationship or physical safety claim has been filled in by this audit.

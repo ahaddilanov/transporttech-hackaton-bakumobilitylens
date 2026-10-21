@@ -262,7 +262,7 @@ safe access, connectivity, approval, construction feasibility or operational ser
 
 ## Commands
 
-From `/home/osman/projects/transporttech-backend`, using existing dependencies:
+From the integrated repository's `backend/` directory, using existing dependencies:
 
 ```bash
 .venv/bin/python scripts/17_simulate_accessibility.py

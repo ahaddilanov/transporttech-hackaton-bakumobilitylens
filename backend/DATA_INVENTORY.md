@@ -1,5 +1,10 @@
 # TransportTech Data Inventory
 
+> Historical source inspection below: 2026-10-10. For current processed-artifact
+> availability, see the 2026-10-21 release addendum at the end of this document.
+> Earlier statements such as “not integrated” are observations of that earlier
+> inspection, not the status of today's completed pipeline.
+
 Local inspection date: 2026-10-10. Study area: geoBoundaries AZE ADM2 `Baku City`,
 `shapeID=54616110B61947743987915`. Provenance and detailed observations are in
 [DATA_SOURCES.md](DATA_SOURCES.md). Audit dates, modeled years, embedded timestamps
@@ -98,3 +103,32 @@ exports. Future exports must follow the agreed contract: EPSG:4326, `[longitude,
 latitude]`, exposed distances in meters, higher priority meaning greater unmet
 need, and `null` for unavailable values. Unknown fields, service relationships,
 licenses, dates and completeness must not be guessed.
+
+## Integrated-workspace release addendum — 2026-10-21
+
+The current integrated workspace has the completed processed layers, scored grid,
+recommendations, scenarios and complete export package. The raw directory in this
+workspace contains only `.gitkeep`; source inputs described above are not shipped
+with a clone. Their earlier inspection does not establish that those raw bytes
+are now present at the processing scripts' expected locations.
+
+| Current local processed/export artifact | Observed records |
+| --- | ---: |
+| Scored grid | 35,029 (19,112 known-population; 15,917 unknown-population) |
+| Normalized stops / route features / metro stations / cycleways | 1,414 / 243 / 27 / 60 |
+| Bus / bicycle recommendations | 20 / 14 |
+| Individual accessibility scenarios | 34 (20 bus; 14 bicycle) |
+| Bicycle study network | 80,957 nodes; 155,944 directed edges, recorded in study metadata |
+| Complete frontend package | 7 GeoJSON layers, summary, scenarios; ZIP with README |
+
+These are available **locally**, not permission-cleared public datasets. The
+working `public/data/` contains real local overrides of older tracked mock files.
+The real scenario JSON is local and ignored. Clone-safe original synthetic
+fixtures are separately provided in `../demo/public/data/`.
+
+The recommendation and simulation stages are implemented and tested. Their
+methodology documents remain authoritative for the actual algorithms. Unknown
+raw-source provenance, acquisition dates and redistribution terms are not
+resolved by successful processing or validation. The current publication gates
+are in [DATA_SOURCES.md](DATA_SOURCES.md#public-release-data-rights-audit--2026-10-21)
+and [RELEASE_READINESS.md](../RELEASE_READINESS.md).
